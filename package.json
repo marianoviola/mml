@@ -1,0 +1,16 @@
+{
+  "name": "mml",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@10.15.0",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "mml": "pnpm --filter @mml/cli start",
+    "mcp": "pnpm --filter @mml/mcp start"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
+}
