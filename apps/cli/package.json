@@ -1,0 +1,12 @@
+{
+  "name": "@mml/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.mjs",
+    "build": "node -e \"console.log('CLI build: no-op during bootstrap')\"",
+    "typecheck": "node -e \"console.log('CLI typecheck: no-op during bootstrap')\"",
+    "test": "node --test"
+  }
+}
