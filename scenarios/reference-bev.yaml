@@ -1,0 +1,22 @@
+id: reference-bev
+kind: vehicle
+status: draft
+powertrain: bev
+segment: c-suv
+currency: EUR
+assumptions:
+  industrial_cost:
+    value: 30000
+    kind: assumption
+  lifecycle_years:
+    value: 15
+    kind: assumption
+  annual_mileage_km:
+    value: 18000
+    kind: assumption
+  refurbishment_years:
+    - 5
+    - 10
+notes:
+  - Canonical battery-electric reference vehicle for MML economic modelling.
+  - Battery degradation, recovery value and second-life assumptions are intentionally not fixed yet.
