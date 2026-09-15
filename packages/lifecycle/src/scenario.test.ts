@@ -1,0 +1,101 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { runFourFiftyScenario } from "./scenario.ts";
+import { ContextStore } from "./context.ts";
+import { LifecycleOperations } from "./operations.ts";
+
+const fresh = () => mkdtempSync(join(tmpdir(), "mml-"));
+
+test("the €450 scenario runs end to end, deterministically, and every step lands in the customer context", () => {
+  const dir = fresh();
+  try {
+    const first = runFourFiftyScenario({ stateDir: dir, modelVersion: "test" });
+    const second = runFourFiftyScenario({ stateDir: fresh(), modelVersion: "test" });
+    assert.equal(first.outputHash, second.outputHash, "same fixtures must give the same bundle");
+
+    const nodes = first.steps.map((step) => step.node);
+    for (const node of ["requirement", "shortlist", "comparison", "ownership", "repair", "continuation"]) {
+      assert.ok(nodes.includes(node), `missing ${node}`);
+    }
+    const context = new ContextStore(dir).get("four-fifty");
+    assert.ok(context.contract, "a contract was signed");
+    assert.ok(context.timeline.length >= 10);
+    assert.equal(context.timeline[0].node, "requirement");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("the model is honest about the €450 gap and finds what has to give", () => {
+  const dir = fresh();
+  try {
+    const bundle = runFourFiftyScenario({ stateDir: dir, modelVersion: "test" });
+    const shortlist = bundle.steps.find((step) => step.node === "shortlist")!.output as { eligible: Array<{ allIn: number; withinBudget: boolean; life: string }> };
+    // Every eligible placement is a family-touring estate; the cheapest is a later life, not a new car.
+    assert.ok(shortlist.eligible.length >= 3);
+    assert.equal(shortlist.eligible[0].life, "third-life");
+    assert.ok(shortlist.eligible[0].allIn < shortlist.eligible[shortlist.eligible.length - 1].allIn);
+
+    const answer = bundle.steps.find((step) => step.title.startsWith("The €450 answer"))!.output as {
+      withinBudget: boolean; adjustments: Array<{ kind: string; allIn?: number }>; contractedAnnualKm: number;
+    };
+    if (!answer.withinBudget) {
+      assert.ok(answer.adjustments.length > 0, "an over-budget answer must say what has to change");
+      const distance = answer.adjustments.find((adjustment) => adjustment.kind === "distance");
+      assert.ok(distance && distance.allIn! <= 450);
+      assert.ok(answer.contractedAnnualKm < 20000);
+    }
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("repair events follow the lifecycle standard: state, response, repair before replacement, continuity", () => {
+  const dir = fresh();
+  try {
+    const bundle = runFourFiftyScenario({ stateDir: dir, modelVersion: "test" });
+    const repairs = bundle.steps.filter((step) => step.node === "repair").map((step) => step.output as { assessment: { eventId: string; state: string; chosen: string; savingVersusAssembly: { value: number } } });
+    const hail = repairs.find((repair) => repair.assessment.eventId === "hail-roof")!;
+    assert.equal(hail.assessment.state, "cosmetic");
+    assert.equal(hail.assessment.chosen, "modular-repair");
+    assert.ok(hail.assessment.savingVersusAssembly.value > 0);
+    const lens = repairs.find((repair) => repair.assessment.eventId === "headlamp-lens-stone")!;
+    assert.equal(lens.assessment.state, "safety-defect");
+    // The Corolla's lamp is a sealed assembly: the conventional design forces the whole unit (chapter 3.6).
+    assert.equal(lens.assessment.chosen, "assembly-replacement");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("continuation is decided on the fleet's money and reports both questions", () => {
+  const dir = fresh();
+  try {
+    const bundle = runFourFiftyScenario({ stateDir: dir, modelVersion: "test" });
+    const continuation = bundle.steps.find((step) => step.node === "continuation")!.output as {
+      decision: string; asset: { remainsMobilityAsset: boolean }; placement: { continueCost: { value: number }; reassignCost: { value: number } };
+    };
+    assert.equal(continuation.asset.remainsMobilityAsset, true);
+    assert.equal(continuation.decision, "continue");
+    assert.ok(continuation.placement.continueCost.value < continuation.placement.reassignCost.value);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("operations refuse to run out of order and validate ids", () => {
+  const dir = fresh();
+  try {
+    const ops = new LifecycleOperations(new ContextStore(dir));
+    assert.throws(() => ops.shortlist("nobody"), /unknown customer/);
+    ops.captureHousehold("c1", { adults: 1, children: 0, longJourneys: false, annualKm: 8000, monthlyBudget: 300, homeCharging: false, publicChargingAccess: true, licenceYears: 2, compactPreferred: true });
+    assert.throws(() => ops.advance("c1", 6), /no active contract/);
+    assert.throws(() => ops.quote("c1", "no-such-offer"), /unknown offer/);
+    assert.throws(() => new ContextStore(dir).get("../etc/passwd"), RangeError);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

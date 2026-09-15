@@ -13,17 +13,17 @@
 
 - [ ] Define scenario schema and validation.
 - [ ] Implement annual lifecycle cash-flow model.
-- [ ] Implement cost-of-capital treatment.
-- [ ] Implement Mobility Rate decomposition.
-- [ ] Implement CRV and MRV primitives.
-- [ ] Add unit tests and golden reference cases.
+- [x] Implement cost-of-capital treatment (fleet, lessor and retail loan, `packages/core/src/acquisition.ts`).
+- [x] Implement Mobility Rate decomposition (`packages/core/src/mobility-rate.ts`).
+- [x] Implement CRV and MRV primitives (`packages/core/src/retention.ts`).
+- [x] Add unit tests and a golden scenario (`four-fifty`, hashed bundle).
 
 ## M2 · Lifecycle engine
 
-- [ ] Model lifecycle transitions: deploy, maintain, refurbish, reassign, retire.
-- [ ] Model refurbishment events and vehicle condition.
-- [ ] Model component harvesting and material recovery.
-- [ ] Model downtime and replacement mobility.
+- [x] Model lifecycle transitions as graph operations: requirement, shortlist, contract, advance, repair, continuation (`packages/lifecycle`).
+- [ ] Model refurbishment events and vehicle condition beyond the scheduled provision.
+- [x] Model component harvesting and material recovery in the continuation decision.
+- [x] Model downtime and replacement mobility on repair events.
 
 ## M3 · Reference vehicles
 
@@ -48,9 +48,9 @@
 
 ## M6 · CLI and MCP
 
-- [ ] Implement CLI commands: `simulate`, `compare`, `break-even`, `assumptions`.
-- [ ] Implement MCP tools: `simulate_scenario`, `compare_scenarios`, `find_break_even`, `get_assumptions`.
-- [ ] Include provenance in every machine-readable result.
+- [x] CLI: `scenario four-fifty`, `assumptions`. Still to come: `simulate`, `compare`, `break-even`.
+- [x] MCP: the lifecycle graph as tools (`capture_household` … `review_continuation`), the customer context as a resource, the `agency` prompt. Scenario-level tools (`simulate_scenario`, `compare_scenarios`, `find_break_even`) follow M5.
+- [x] Include provenance in every machine-readable result.
 
 ## M7 · Publication bundles
 
@@ -61,7 +61,13 @@
 
 ## M8 · Agency prototype
 
-- [ ] Build only after M1-M7 are credible.
-- [ ] Translate household needs and budget into mobility scenarios.
-- [ ] Show best-fit, lower-cost and higher-comfort alternatives.
-- [ ] Explain recommendation and uncertainty rather than only returning a price.
+The order was revised in September 2026: the working note *Agentic MML* argued
+that the lifecycle experience may become integrable before the lifecycle
+industry becomes integrated, so an agentic layer was built on the deterministic
+core first, with fixtures standing in for the ecosystem. See `docs/AGENTIC.md`.
+
+- [x] Translate household needs and budget into mobility scenarios.
+- [x] Show best-fit and lower-cost alternatives, including later lives of the same model.
+- [x] Explain recommendation and trade-off rather than only returning a price.
+- [ ] Put a real household in front of the Agency and record the transcript.
+- [ ] Replace one fixture at a time with a live source (dealer stock, insurance tariff, repair pricing).

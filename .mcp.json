@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "mml": {
+      "command": "node",
+      "args": ["apps/mcp/dist/server.js"],
+      "env": { "MML_STATE_DIR": "state" }
+    }
+  }
+}

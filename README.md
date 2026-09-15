@@ -8,14 +8,17 @@ This repository contains the model, assumptions, scenarios and interfaces used t
 
 ```text
 packages/core            deterministic economics and lifecycle model
+packages/data            fixtures with provenance (vehicles, placements, finance, insurance, curves, repair events)
+packages/lifecycle       lifecycle graph operations and the persistent customer context
 apps/cli                 command-line interface for reproducible runs
-apps/mcp                 MCP adapter over the core model
-apps/agency-prototype    future experience prototype
-research                 assumptions, datasets and source notes
+apps/mcp                 MCP adapter over the lifecycle operations, with the Agency prompt
 scenarios                canonical MML-H / MML-E and customer scenarios
-outputs                   generated canonical result bundles
-docs                      methodology and architecture
+state                    customer contexts written by the MCP server (gitignored)
+outputs                  generated result bundles (gitignored)
+docs                     methodology and architecture
 ```
+
+See `docs/AGENTIC.md` for the agentic layer and how to run it.
 
 ## Principles
 
@@ -37,4 +40,6 @@ docs                      methodology and architecture
 7. Generate immutable result bundles for the MML publication.
 8. Build an Agency experience prototype only after the model is credible.
 
-Status: **research bootstrap**.
+Status: **first stone**. The deterministic core, the fixture layer, the lifecycle
+operations and the MCP server exist and are tested; the €450 scenario runs end to
+end from the CLI. Every numeric input is still an assumption.

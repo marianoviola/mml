@@ -1,18 +1,21 @@
 {
-  "name": "@mml/cli",
+  "name": "@mml/mcp",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "bin": { "mml": "./dist/index.js" },
+  "main": "./dist/server.js",
+  "bin": { "mml-mcp": "./dist/server.js" },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "start": "node dist/index.js",
+    "start": "node dist/server.js",
     "test": "node --test src/*.test.ts"
   },
   "dependencies": {
     "@mml/core": "workspace:*",
     "@mml/data": "workspace:*",
-    "@mml/lifecycle": "workspace:*"
+    "@mml/lifecycle": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^3.25.0"
   }
 }

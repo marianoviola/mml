@@ -1,18 +1,16 @@
 {
-  "name": "@mml/cli",
+  "name": "@mml/data",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "bin": { "mml": "./dist/index.js" },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "start": "node dist/index.js",
     "test": "node --test src/*.test.ts"
   },
   "dependencies": {
-    "@mml/core": "workspace:*",
-    "@mml/data": "workspace:*",
-    "@mml/lifecycle": "workspace:*"
+    "@mml/core": "workspace:*"
   }
 }

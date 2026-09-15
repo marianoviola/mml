@@ -1,0 +1,19 @@
+{
+  "_note": "Pricing assumptions for the three acquisition modes. None is a quotation; each is a scenario parameter to be replaced by evidence.",
+  "loanApr": { "value": 0.07, "kind": "assumption", "rationale": "retail car loan APR band, 2026" },
+  "loanFinancedShare": { "value": 0.8, "kind": "assumption", "rationale": "20% deposit" },
+  "nltMarginShare": { "value": 0.08, "kind": "assumption", "rationale": "long-term rental margin band" },
+  "nltCostOfCapital": { "value": 0.06, "kind": "assumption", "rationale": "lessor funding cost band" },
+  "fleetDiscount": { "value": 0.12, "kind": "assumption", "rationale": "fleet purchase discount off list" },
+  "fleetCostOfCapital": { "value": 0.05, "kind": "assumption", "rationale": "asset-company funding cost band; chapter 9 hypothesis" },
+  "agencyFeeMonthly": { "value": 25, "kind": "assumption", "rationale": "Agency service fee per active contract" },
+  "operationsMonthly": { "value": 15, "kind": "assumption", "rationale": "telematics, administration, reassignment logistics" },
+  "marginShare": { "value": 0.06, "kind": "assumption", "rationale": "lifecycle operator margin on fixed subtotal" },
+  "warrantyPoolShare": { "value": 0.004, "kind": "assumption", "rationale": "annual provision for unplanned repair, share of asset cost" },
+  "firstLifeConsumptionFactor": { "value": 1.2, "kind": "assumption", "rationale": "chapter 2.7: a new vehicle consumes more mobility value per month than later lives" },
+  "laterLifeConsumptionFactor": { "value": 0.9, "kind": "assumption", "rationale": "later lives consume the asset more slowly" },
+  "ownershipTaxMonthly": { "value": 20, "kind": "assumption", "rationale": "ownership tax band" },
+  "retailMaintenanceUplift": { "value": 1.15, "kind": "assumption", "rationale": "retail vs fleet servicing price" },
+  "ownershipRepairProvisionShare": { "value": 0.01, "kind": "assumption", "rationale": "annual expected unplanned repair for a private owner without risk pooling, share of purchase price" },
+  "reassignmentCost": { "value": 300, "kind": "assumption", "rationale": "one-off logistics, handover and records when a customer moves vehicle" }
+}

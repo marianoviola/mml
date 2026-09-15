@@ -1,0 +1,166 @@
+{
+  "_note": "Scale references for modelling. List prices, energy and maintenance figures are assumptions calibrated to the 2026 European market and must be replaced by quotations before any published figure. Vehicles are the chapter 2 table references plus the chapter 3 pilot candidate.",
+  "vehicles": [
+    {
+      "id": "dacia-spring",
+      "make": "Dacia", "model": "Spring",
+      "mobilityClass": "urban-compact", "powertrain": "bev", "seats": 4, "luggageLitres": 308,
+      "listPrice": { "value": 17900, "kind": "assumption", "rationale": "scale reference, 2026 list price band" },
+      "energyCostPerKm": {
+        "home": { "value": 0.035, "kind": "assumption", "rationale": "14 kWh/100 km at €0.25/kWh home tariff" },
+        "public": { "value": 0.075, "kind": "assumption", "rationale": "14 kWh/100 km at €0.55/kWh public AC/DC mix" }
+      },
+      "maintenancePerYear": { "value": 300, "kind": "assumption", "rationale": "BEV service schedule, no oil, brake wear reduced" },
+      "insuranceGroup": 10,
+      "kerbMassKg": { "value": 980, "kind": "assumption", "rationale": "manufacturer figure band" },
+      "residualCurve": "bev",
+      "lifecycle": {
+        "stage": "mml-compatible",
+        "structuralLifeYears": { "value": 15, "kind": "assumption", "rationale": "reference scenario lifecycle_years" },
+        "softwareSupportHorizonYears": { "value": 8, "kind": "assumption", "rationale": "no published commitment; conservative" },
+        "partsAvailability": "medium",
+        "modularLighting": false,
+        "refurbishmentYears": [5, 10],
+        "refurbishmentCost": { "value": 1800, "kind": "assumption", "rationale": "interior, cosmetic, battery health check" }
+      }
+    },
+    {
+      "id": "renault-clio-etech",
+      "make": "Renault", "model": "Clio E-Tech full hybrid",
+      "mobilityClass": "compact-mixed", "powertrain": "hev", "seats": 5, "luggageLitres": 301,
+      "listPrice": { "value": 24500, "kind": "assumption", "rationale": "scale reference, 2026 list price band" },
+      "energyCostPerKm": {
+        "home": { "value": 0.078, "kind": "assumption", "rationale": "4.2 l/100 km at €1.85/l" },
+        "public": { "value": 0.078, "kind": "assumption", "rationale": "forecourt fuel, charging irrelevant" }
+      },
+      "maintenancePerYear": { "value": 420, "kind": "assumption", "rationale": "hybrid service schedule" },
+      "insuranceGroup": 14,
+      "kerbMassKg": { "value": 1300, "kind": "assumption", "rationale": "manufacturer figure band" },
+      "residualCurve": "hev",
+      "lifecycle": {
+        "stage": "mml-compatible",
+        "structuralLifeYears": { "value": 15, "kind": "assumption", "rationale": "reference scenario lifecycle_years" },
+        "softwareSupportHorizonYears": { "value": 10, "kind": "assumption", "rationale": "conservative" },
+        "partsAvailability": "high",
+        "modularLighting": false,
+        "refurbishmentYears": [5, 10],
+        "refurbishmentCost": { "value": 2200, "kind": "assumption", "rationale": "interior, cosmetic, hybrid battery check" }
+      }
+    },
+    {
+      "id": "toyota-corolla-ts-hybrid",
+      "make": "Toyota", "model": "Corolla Touring Sports Hybrid",
+      "mobilityClass": "family-touring", "powertrain": "hev", "seats": 5, "luggageLitres": 596,
+      "listPrice": { "value": 33500, "kind": "assumption", "rationale": "scale reference, 2026 list price band" },
+      "energyCostPerKm": {
+        "home": { "value": 0.083, "kind": "assumption", "rationale": "4.5 l/100 km at €1.85/l" },
+        "public": { "value": 0.083, "kind": "assumption", "rationale": "forecourt fuel, charging irrelevant" }
+      },
+      "maintenancePerYear": { "value": 450, "kind": "assumption", "rationale": "hybrid service schedule" },
+      "insuranceGroup": 18,
+      "kerbMassKg": { "value": 1420, "kind": "assumption", "rationale": "manufacturer figure band" },
+      "residualCurve": "hev",
+      "lifecycle": {
+        "stage": "mml-compatible",
+        "structuralLifeYears": { "value": 15, "kind": "assumption", "rationale": "reference scenario lifecycle_years" },
+        "softwareSupportHorizonYears": { "value": 10, "kind": "assumption", "rationale": "conservative" },
+        "partsAvailability": "high",
+        "modularLighting": false,
+        "refurbishmentYears": [5, 10],
+        "refurbishmentCost": { "value": 2500, "kind": "assumption", "rationale": "interior, cosmetic, hybrid battery check, suspension wear" }
+      }
+    },
+    {
+      "id": "skoda-octavia-combi",
+      "make": "Škoda", "model": "Octavia Combi 1.5 TSI",
+      "mobilityClass": "family-touring", "powertrain": "ice", "seats": 5, "luggageLitres": 640,
+      "listPrice": { "value": 31000, "kind": "assumption", "rationale": "scale reference, 2026 list price band" },
+      "energyCostPerKm": {
+        "home": { "value": 0.111, "kind": "assumption", "rationale": "6.0 l/100 km at €1.85/l" },
+        "public": { "value": 0.111, "kind": "assumption", "rationale": "forecourt fuel" }
+      },
+      "maintenancePerYear": { "value": 520, "kind": "assumption", "rationale": "petrol service schedule" },
+      "insuranceGroup": 17,
+      "kerbMassKg": { "value": 1350, "kind": "assumption", "rationale": "manufacturer figure band" },
+      "residualCurve": "ice",
+      "lifecycle": {
+        "stage": "mml-compatible",
+        "structuralLifeYears": { "value": 15, "kind": "assumption", "rationale": "reference scenario lifecycle_years" },
+        "softwareSupportHorizonYears": { "value": 10, "kind": "assumption", "rationale": "conservative" },
+        "partsAvailability": "high",
+        "modularLighting": false,
+        "refurbishmentYears": [5, 10],
+        "refurbishmentCost": { "value": 2300, "kind": "assumption", "rationale": "interior, cosmetic, suspension wear" }
+      }
+    },
+    {
+      "id": "skoda-enyaq",
+      "make": "Škoda", "model": "Enyaq",
+      "mobilityClass": "family-electric", "powertrain": "bev", "seats": 5, "luggageLitres": 585,
+      "listPrice": { "value": 44000, "kind": "assumption", "rationale": "scale reference, 2026 list price band" },
+      "energyCostPerKm": {
+        "home": { "value": 0.045, "kind": "assumption", "rationale": "18 kWh/100 km at €0.25/kWh" },
+        "public": { "value": 0.099, "kind": "assumption", "rationale": "18 kWh/100 km at €0.55/kWh" }
+      },
+      "maintenancePerYear": { "value": 380, "kind": "assumption", "rationale": "BEV service schedule" },
+      "insuranceGroup": 22,
+      "kerbMassKg": { "value": 2000, "kind": "assumption", "rationale": "manufacturer figure band" },
+      "residualCurve": "bev",
+      "lifecycle": {
+        "stage": "mml-compatible",
+        "structuralLifeYears": { "value": 15, "kind": "assumption", "rationale": "reference scenario lifecycle_years" },
+        "softwareSupportHorizonYears": { "value": 10, "kind": "assumption", "rationale": "conservative" },
+        "partsAvailability": "high",
+        "modularLighting": false,
+        "refurbishmentYears": [5, 10],
+        "refurbishmentCost": { "value": 3200, "kind": "assumption", "rationale": "interior, cosmetic, battery module assessment" }
+      }
+    },
+    {
+      "id": "vw-id-buzz-7",
+      "make": "Volkswagen", "model": "ID. Buzz seven-seat",
+      "mobilityClass": "large-family", "powertrain": "bev", "seats": 7, "luggageLitres": 1121,
+      "listPrice": { "value": 62000, "kind": "assumption", "rationale": "scale reference, 2026 list price band" },
+      "energyCostPerKm": {
+        "home": { "value": 0.055, "kind": "assumption", "rationale": "22 kWh/100 km at €0.25/kWh" },
+        "public": { "value": 0.121, "kind": "assumption", "rationale": "22 kWh/100 km at €0.55/kWh" }
+      },
+      "maintenancePerYear": { "value": 450, "kind": "assumption", "rationale": "BEV service schedule, larger tyres" },
+      "insuranceGroup": 26,
+      "kerbMassKg": { "value": 2500, "kind": "assumption", "rationale": "manufacturer figure band" },
+      "residualCurve": "bev",
+      "lifecycle": {
+        "stage": "mml-compatible",
+        "structuralLifeYears": { "value": 15, "kind": "assumption", "rationale": "reference scenario lifecycle_years" },
+        "softwareSupportHorizonYears": { "value": 10, "kind": "assumption", "rationale": "conservative" },
+        "partsAvailability": "medium",
+        "modularLighting": false,
+        "refurbishmentYears": [5, 10],
+        "refurbishmentCost": { "value": 3800, "kind": "assumption", "rationale": "interior, cosmetic, battery module assessment" }
+      }
+    },
+    {
+      "id": "suzuki-vitara-hybrid",
+      "make": "Suzuki", "model": "Vitara 1.4 Boosterjet Hybrid",
+      "mobilityClass": "compact-mixed", "powertrain": "mhev", "seats": 5, "luggageLitres": 362,
+      "listPrice": { "value": 27000, "kind": "assumption", "rationale": "scale reference, 2026 list price band" },
+      "energyCostPerKm": {
+        "home": { "value": 0.100, "kind": "assumption", "rationale": "5.4 l/100 km at €1.85/l" },
+        "public": { "value": 0.100, "kind": "assumption", "rationale": "forecourt fuel" }
+      },
+      "maintenancePerYear": { "value": 430, "kind": "assumption", "rationale": "mild-hybrid petrol service schedule" },
+      "insuranceGroup": 16,
+      "kerbMassKg": { "value": 1250, "kind": "assumption", "rationale": "manufacturer figure band" },
+      "residualCurve": "ice",
+      "lifecycle": {
+        "stage": "mml-compatible",
+        "structuralLifeYears": { "value": 15, "kind": "assumption", "rationale": "reference scenario lifecycle_years" },
+        "softwareSupportHorizonYears": { "value": 8, "kind": "assumption", "rationale": "conservative" },
+        "partsAvailability": "high",
+        "modularLighting": false,
+        "refurbishmentYears": [5, 10],
+        "refurbishmentCost": { "value": 2000, "kind": "assumption", "rationale": "interior, cosmetic, 48V system check" }
+      }
+    }
+  ]
+}

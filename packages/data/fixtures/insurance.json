@@ -1,0 +1,7 @@
+{
+  "_note": "Premium model by insurance group; a stand-in for a tariff API.",
+  "basePremiumPerGroupPoint": { "value": 48, "kind": "assumption", "rationale": "annual premium per group point, comprehensive cover, metropolitan Italy band" },
+  "fleetDiscount": { "value": 0.2, "kind": "assumption", "rationale": "fleet risk pooling" },
+  "youngDriverUplift": { "value": 1.6, "kind": "assumption", "rationale": "licence under three years" },
+  "youngDriverMaxLicenceYears": 3
+}

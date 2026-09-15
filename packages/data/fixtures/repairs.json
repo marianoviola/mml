@@ -1,0 +1,56 @@
+{
+  "_note": "Event catalogue for chapters 3.6 and 3.8. Costs are assumptions in the band of European bodyshop and dealer pricing.",
+  "events": [
+    {
+      "id": "headlamp-lens-stone",
+      "label": "Stone chip cracks the headlamp lens",
+      "state": "safety-defect",
+      "assemblyReplacementCost": { "value": 1100, "kind": "assumption", "rationale": "LED headlamp assembly, parts and labour" },
+      "modularRepairCost": { "value": 180, "kind": "assumption", "rationale": "lens replacement on a separable lamp" },
+      "requiresModularLighting": true,
+      "downtimeDaysAssembly": 1,
+      "downtimeDaysModular": 0,
+      "driveable": true
+    },
+    {
+      "id": "hail-roof",
+      "label": "Hail dents the roof and bonnet",
+      "state": "cosmetic",
+      "assemblyReplacementCost": { "value": 2800, "kind": "assumption", "rationale": "roof panel replacement and paint" },
+      "modularRepairCost": { "value": 600, "kind": "assumption", "rationale": "paintless dent repair" },
+      "downtimeDaysAssembly": 5,
+      "downtimeDaysModular": 1,
+      "ownershipValueLoss": { "value": 7000, "kind": "assumption", "rationale": "resale discount on a hail-damaged five-year-old family estate" },
+      "driveable": true
+    },
+    {
+      "id": "windscreen-adas",
+      "label": "Windscreen cracked in the camera zone",
+      "state": "safety-defect",
+      "assemblyReplacementCost": { "value": 900, "kind": "assumption", "rationale": "screen plus ADAS recalibration" },
+      "downtimeDaysAssembly": 1,
+      "downtimeDaysModular": 1,
+      "driveable": false
+    },
+    {
+      "id": "hybrid-battery-module",
+      "label": "Hybrid battery capacity below threshold",
+      "state": "maintenance-shortfall",
+      "assemblyReplacementCost": { "value": 3200, "kind": "assumption", "rationale": "complete hybrid battery pack" },
+      "modularRepairCost": { "value": 900, "kind": "assumption", "rationale": "module-level replacement and balancing" },
+      "downtimeDaysAssembly": 2,
+      "downtimeDaysModular": 2,
+      "driveable": true
+    },
+    {
+      "id": "seat-bolster-wear",
+      "label": "Driver seat bolster worn through",
+      "state": "cosmetic",
+      "assemblyReplacementCost": { "value": 650, "kind": "assumption", "rationale": "seat cover assembly" },
+      "modularRepairCost": { "value": 140, "kind": "assumption", "rationale": "local trim repair" },
+      "downtimeDaysAssembly": 1,
+      "downtimeDaysModular": 0,
+      "driveable": true
+    }
+  ]
+}
