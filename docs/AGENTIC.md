@@ -55,7 +55,7 @@ rather than claim MML is cheaper, and to record every step.
 ## Running it
 
 ```bash
-npx pnpm@10.15.0 install
+npx pnpm@10.15.0 install          # Node >= 24
 npx pnpm@10.15.0 -r build
 npx pnpm@10.15.0 -r test          # 22 tests: core, fixtures, scenario, MCP round-trip, CLI
 

@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        # version comes from packageManager in package.json
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -r build
+      - run: pnpm -r typecheck
+      - run: pnpm -r test
+
+      # The golden scenario must still run from a clean checkout and produce a bundle with provenance.
+      - run: node apps/cli/dist/index.js scenario four-fifty --out "$RUNNER_TEMP/scenario-four-fifty.json" --state "$RUNNER_TEMP/state"
+      - run: node -e 'const b=require(process.env.RUNNER_TEMP+"/scenario-four-fifty.json"); if(!b.modelVersion||!b.fixtureHashes) process.exit(1)'

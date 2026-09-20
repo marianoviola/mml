@@ -43,3 +43,7 @@ See `docs/AGENTIC.md` for the agentic layer and how to run it.
 Status: **first stone**. The deterministic core, the fixture layer, the lifecycle
 operations and the MCP server exist and are tested; the €450 scenario runs end to
 end from the CLI. Every numeric input is still an assumption.
+
+## Licence
+
+MIT. See `LICENSE`. Requires Node 24 or later (tests import TypeScript sources directly).
