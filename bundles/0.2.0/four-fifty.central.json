@@ -1,11 +1,11 @@
 {
   "scenario": "four-fifty",
-  "modelVersion": "0.2.0+9251ed3",
+  "modelVersion": "0.2.0+a24b3ad",
   "generatedAt": "2026-09-15T09:00:00.000Z",
   "fixtureHashes": {
     "vehicles.json": "b94681f2d7e3",
     "offers.json": "1fb17d035429",
-    "finance.json": "128e7d0582c0",
+    "finance.json": "bbd003a9e4f7",
     "insurance.json": "133c4c09efb2",
     "residual-curves.json": "1b213a00da8e",
     "energy.json": "e152458087fa",
@@ -164,9 +164,9 @@
           },
           {
             "mode": "long-term-rental",
-            "fixed": 492,
+            "fixed": 524,
             "variable": 172,
-            "allIn": 664,
+            "allIn": 696,
             "breakdown": {
               "depreciation": {
                 "value": 174,
@@ -192,6 +192,16 @@
                 "value": 36,
                 "kind": "derived",
                 "rationale": "lessor margin"
+              },
+              "deductibles": {
+                "value": 17,
+                "kind": "derived",
+                "rationale": "0.4 events/yr × €500 franchigia, carried by the renter"
+              },
+              "returnCondition": {
+                "value": 15,
+                "kind": "derived",
+                "rationale": "€900 expected settlement at return, over the term"
               }
             }
           },
@@ -578,7 +588,7 @@
         "baseline": {
           "mml": 590,
           "ownership": 544,
-          "longTermRental": 493
+          "longTermRental": 525
         },
         "leading": [
           "curves.conditionAdjustment.good",
@@ -670,17 +680,17 @@
             "longTermRental": -4
           },
           {
-            "path": "curves.kmAdjustmentPer5000",
-            "kind": "assumption",
-            "mml": -3,
-            "ownership": 4,
-            "longTermRental": 4
-          },
-          {
             "path": "insurance.comprehensiveShareOfValue",
             "kind": "assumption",
             "mml": 3,
             "ownership": 5,
+            "longTermRental": 3
+          },
+          {
+            "path": "curves.kmAdjustmentPer5000",
+            "kind": "assumption",
+            "mml": -3,
+            "ownership": 4,
             "longTermRental": 3
           },
           {
@@ -691,25 +701,18 @@
             "longTermRental": 3
           },
           {
-            "path": "finance.tyresPerKm",
-            "kind": "assumption",
-            "mml": 2,
-            "ownership": 3,
-            "longTermRental": 3
-          },
-          {
-            "path": "finance.nltCostOfCapital",
-            "kind": "assumption",
-            "mml": 0,
-            "ownership": 0,
-            "longTermRental": 7
-          },
-          {
             "path": "finance.retailMaintenanceUplift",
             "kind": "assumption",
             "mml": 0,
             "ownership": 7,
             "longTermRental": 0
+          },
+          {
+            "path": "finance.tyresPerKm",
+            "kind": "assumption",
+            "mml": 2,
+            "ownership": 3,
+            "longTermRental": 2
           },
           {
             "path": "finance.loanApr",
@@ -724,6 +727,13 @@
             "mml": 0,
             "ownership": 6,
             "longTermRental": 0
+          },
+          {
+            "path": "finance.nltCostOfCapital",
+            "kind": "assumption",
+            "mml": 0,
+            "ownership": 0,
+            "longTermRental": 6
           },
           {
             "path": "finance.fleetCostOfCapital",
@@ -744,7 +754,7 @@
             "kind": "assumption",
             "mml": 1,
             "ownership": 2,
-            "longTermRental": 2
+            "longTermRental": 1
           },
           {
             "path": "finance.maintenanceKmExponent",
@@ -759,13 +769,6 @@
             "mml": -2,
             "ownership": 0,
             "longTermRental": -2
-          },
-          {
-            "path": "finance.operationsMonthly",
-            "kind": "assumption",
-            "mml": 1,
-            "ownership": 0,
-            "longTermRental": 2
           },
           {
             "path": "finance.agencyFeeMonthly",
@@ -787,6 +790,13 @@
             "mml": 0,
             "ownership": 0,
             "longTermRental": 2
+          },
+          {
+            "path": "finance.operationsMonthly",
+            "kind": "assumption",
+            "mml": 1,
+            "ownership": 0,
+            "longTermRental": 1
           },
           {
             "path": "finance.ownershipRepairProvisionShare",
@@ -824,6 +834,27 @@
             "longTermRental": 0
           },
           {
+            "path": "finance.nltDeductiblePerEvent",
+            "kind": "assumption",
+            "mml": 0,
+            "ownership": 0,
+            "longTermRental": 1
+          },
+          {
+            "path": "finance.nltReturnConditionCharge",
+            "kind": "assumption",
+            "mml": 0,
+            "ownership": 0,
+            "longTermRental": 1
+          },
+          {
+            "path": "finance.unplannedEventsPerYear",
+            "kind": "assumption",
+            "mml": 0,
+            "ownership": 0,
+            "longTermRental": 1
+          },
+          {
             "path": "vehicle.kerbMassKg",
             "kind": "evidence",
             "mml": -1,
@@ -855,7 +886,7 @@
         "central": {
           "mml": 590,
           "ownership": 544,
-          "longTermRental": 493
+          "longTermRental": 525
         },
         "rows": [
           {
@@ -871,12 +902,13 @@
           {
             "question": "How long must the vehicle's structural life be for MML to cost what long-term rental costs?",
             "input": "vehicle.lifecycle.structuralLifeYears",
+            "value": 22.5,
             "range": [
               12,
               30
             ],
             "central": 15,
-            "note": "No structural life up to 30 years closes the gap: MML €590 against rental €493 at 15 years."
+            "note": "22.5 years against the central 15; MML €590 and rental €525 at the central value."
           },
           {
             "question": "At what fleet cost of capital does MML cost what long-term rental costs?",
@@ -891,13 +923,13 @@
           {
             "question": "At what later-life consumption factor does MML cost what long-term rental costs?",
             "input": "finance.laterLifeConsumptionFactor",
-            "value": 0.28,
+            "value": 0.48,
             "range": [
               0.2,
               2
             ],
             "central": 0.9,
-            "note": "0.28 against the central 0.9."
+            "note": "0.48 against the central 0.9."
           }
         ]
       }
@@ -909,7 +941,7 @@
         "central": {
           "mml": 754,
           "ownership": 752,
-          "longTermRental": 664
+          "longTermRental": 696
         },
         "rows": [
           {
@@ -925,35 +957,35 @@
           {
             "question": "How long must the vehicle's structural life be for MML to cost what long-term rental costs?",
             "input": "vehicle.lifecycle.structuralLifeYears",
-            "value": 25.5,
+            "value": 20.5,
             "range": [
               6,
               30
             ],
             "central": 15,
-            "note": "25.5 years against the central 15; MML €754 and rental €664 at the central value."
+            "note": "20.5 years against the central 15; MML €754 and rental €696 at the central value."
           },
           {
             "question": "At what fleet cost of capital does MML cost what long-term rental costs?",
             "input": "finance.fleetCostOfCapital",
-            "value": 0.0111,
+            "value": 0.0246,
             "range": [
               0,
               0.15
             ],
             "central": 0.05,
-            "note": "1.11% against the central 5%."
+            "note": "2.46% against the central 5%."
           },
           {
             "question": "At what first-life consumption factor does MML cost what long-term rental costs?",
             "input": "finance.firstLifeConsumptionFactor",
-            "value": 0.69,
+            "value": 0.87,
             "range": [
               0.2,
               2
             ],
             "central": 1.2,
-            "note": "0.69 against the central 1.2."
+            "note": "0.87 against the central 1.2."
           }
         ]
       }
@@ -964,8 +996,8 @@
       "output": [
         "requirement: Household of 4 declares €450/month all-in; class family-touring, 20000 km/yr, 60 months.",
         "shortlist: 4 eligible placement(s); 0 within €450. Cheapest: off-corolla-fleet-6y at €590.",
-        "comparison: Quoted off-corolla-new-mi: ownership €752, rental €664, MML €754 all-in.",
-        "comparison: Quoted off-corolla-fleet-6y: ownership €544, rental €493, MML €590 all-in.",
+        "comparison: Quoted off-corolla-new-mi: ownership €752, rental €696, MML €754 all-in.",
+        "comparison: Quoted off-corolla-fleet-6y: ownership €544, rental €525, MML €590 all-in.",
         "contract: Contract on off-corolla-fleet-6y (Toyota Corolla Touring Sports Hybrid, third-life): fixed €418/month, variable ≈ €172, term 60 months.",
         "ownership: 18 month(s) elapsed, 30000 km driven; vehicle now 7.5 years, 142000 km. Material Capital Credit €321.",
         "repair: Stone chip cracks the headlamp lens: safety-defect, assembly-replacement at €1100. No interruption: the vehicle stays in service while the repair is scheduled.",
@@ -977,5 +1009,5 @@
       ]
     }
   ],
-  "outputHash": "e474e1794729a69b"
+  "outputHash": "3b25875581f2220a"
 }
