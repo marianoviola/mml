@@ -16,7 +16,7 @@ export interface Household {
   /** Regular journeys above ~300 km. */
   longJourneys: boolean;
   annualKm: number;
-  /** Monthly all-in budget the household declares before quotation. */
+  /** Monthly budget the household declares before quotation, for the fixed Mobility Rate: energy is estimated and paid separately (chapter 2.3). */
   monthlyBudget: number;
   homeCharging: boolean;
   /** Reliable public charging near home or work. */

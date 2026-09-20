@@ -48,7 +48,7 @@ test("bundles writes one bundle per assumption set, the CSV tables and a manifes
     const central = JSON.parse(readFileSync(join(dir, "four-fifty.central.json"), "utf8"));
     assert.equal(central.outputHash, manifest.bundles[1].outputHash);
     const modes = readFileSync(join(dir, "modes.csv"), "utf8");
-    assert.match(modes, /^"set","placement","mode","fixed","variable","allIn"\n/);
+    assert.match(modes, /^"set","placement","mode","fixed","variable","allIn","envelopeBasis"\n/);
     assert.ok(modes.includes('"adverse"') && modes.includes('"optimistic"'), "the tables stack every set");
     assert.throws(() => execFileSync("node", [entry, "scenario", "four-fifty", "--set", "nope", "--state", join(dir, "s"), "--out", join(dir, "x.json")], { stdio: "pipe" }));
   } finally {

@@ -118,7 +118,8 @@ export class LifecycleOperations {
       curves,
       energy,
     });
-    const gap = rate.allInMonthly.value - household.monthlyBudget;
+    // Chapter 2.3: the budget is for the fixed Mobility Rate; energy is estimated and shown, not counted against it.
+    const gap = rate.fixedRate.value - household.monthlyBudget;
     return { offer, vehicle, rate, withinBudget: gap <= 0, budgetGap: round(gap) };
   }
 
@@ -130,7 +131,7 @@ export class LifecycleOperations {
     this.store.append(
       context,
       "requirement",
-      `Household of ${household.adults + household.children} declares €${household.monthlyBudget}/month all-in; class ${requirement.mobilityClass}, ${requirement.annualKm} km/yr, ${requirement.termMonths} months.`,
+      `Household of ${household.adults + household.children} declares €${household.monthlyBudget}/month for the fixed Mobility Rate, energy separate; class ${requirement.mobilityClass}, ${requirement.annualKm} km/yr, ${requirement.termMonths} months.`,
       requirement,
     );
     return { context, requirement };
@@ -152,7 +153,7 @@ export class LifecycleOperations {
     this.store.append(
       context,
       "shortlist",
-      `${eligible.length} eligible placement(s); ${within.length} within €${household.monthlyBudget}. Cheapest: ${eligible[0]?.offer.id ?? "none"} at €${eligible[0]?.rate.allInMonthly.value ?? "-"}.`,
+      `${eligible.length} eligible placement(s); ${within.length} within €${household.monthlyBudget} fixed. Cheapest: ${eligible[0]?.offer.id ?? "none"} at €${eligible[0]?.rate.fixedRate.value ?? "-"} fixed, €${eligible[0]?.rate.allInMonthly.value ?? "-"} with estimated use.`,
       context.shortlist,
     );
     return {
@@ -183,8 +184,8 @@ export class LifecycleOperations {
     const adjustments: BudgetAdjustment[] = [];
     if (!quote.withinBudget) {
       const km = annualKm ?? requirement.annualKm;
-      const allInAt = (candidateKm: number) => this.quoteOffer(household, requirement, offer, termMonths, candidateKm).rate.allInMonthly.value;
-      const breakEvenKm = km > MINIMUM_ANNUAL_KM ? breakEven(allInAt, household.monthlyBudget, MINIMUM_ANNUAL_KM, km, { step: 500 }) : undefined;
+      const fixedAt = (candidateKm: number) => this.quoteOffer(household, requirement, offer, termMonths, candidateKm).rate.fixedRate.value;
+      const breakEvenKm = km > MINIMUM_ANNUAL_KM ? breakEven(fixedAt, household.monthlyBudget, MINIMUM_ANNUAL_KM, km, { step: 500 }) : undefined;
       if (breakEvenKm !== undefined) {
         const trial = this.quoteOffer(household, requirement, offer, termMonths, breakEvenKm);
         const settledKm = trial.withinBudget ? breakEvenKm : breakEvenKm - 500;
@@ -193,7 +194,7 @@ export class LifecycleOperations {
           kind: "distance",
           annualKm: settledKm,
           allIn: settled.rate.allInMonthly.value,
-          note: `At ${settledKm} km/yr this placement is €${settled.rate.allInMonthly.value}/month, within budget.`,
+          note: `At ${settledKm} km/yr this placement is €${settled.rate.fixedRate.value}/month fixed (€${settled.rate.allInMonthly.value} with estimated use), within budget.`,
         });
       }
       const laterLives = this.fixtures.offers.filter(
@@ -206,20 +207,20 @@ export class LifecycleOperations {
             kind: "later-life",
             offerId: later.id,
             allIn: trial.rate.allInMonthly.value,
-            note: `The same model in a later life (${later.condition}, ${later.ageYears} years) is €${trial.rate.allInMonthly.value}/month, within budget.`,
+            note: `The same model in a later life (${later.condition}, ${later.ageYears} years) is €${trial.rate.fixedRate.value}/month fixed (€${trial.rate.allInMonthly.value} with estimated use), within budget.`,
           });
           break;
         }
       }
       if (adjustments.length === 0) {
-        const atDeclared = quote.rate.allInMonthly.value;
-        const atFloor = km > MINIMUM_ANNUAL_KM ? allInAt(MINIMUM_ANNUAL_KM) : atDeclared;
+        const atDeclared = quote.rate.fixedRate.value;
+        const atFloor = km > MINIMUM_ANNUAL_KM ? fixedAt(MINIMUM_ANNUAL_KM) : atDeclared;
         adjustments.push({
           kind: "budget",
           annualKm: km,
           requiredBudget: atDeclared,
           note:
-            `No distance down to ${MINIMUM_ANNUAL_KM} km/yr brings this placement within €${household.monthlyBudget}: it needs €${atDeclared}/month at ${km} km/yr` +
+            `No distance down to ${MINIMUM_ANNUAL_KM} km/yr brings this placement within €${household.monthlyBudget} fixed: it needs €${atDeclared}/month at ${km} km/yr` +
             (atFloor < atDeclared ? ` and €${atFloor}/month at ${MINIMUM_ANNUAL_KM} km/yr.` : ".") +
             " What has to give is the budget or the class.",
         });

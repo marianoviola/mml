@@ -18,6 +18,8 @@ export interface ModeCost {
   monthlyEquivalent: ProvenancedValue;
   fixed: ProvenancedValue;
   variableUse: ProvenancedValue;
+  /** Part 1's statistical envelope: the monthly equivalent less insurance and finance, for comparison with national spending data. */
+  envelopeBasis: ProvenancedValue;
   breakdown: Record<string, ProvenancedValue>;
   notes: string[];
 }
@@ -87,6 +89,7 @@ export function compareAcquisitionModes(args: {
       fixed: derived(round(ownershipFixed), "depreciation + interest + retail insurance + retail maintenance + tax + unplanned repair provision"),
       variableUse: derived(round(energyMonthly), "energy"),
       monthlyEquivalent: derived(round(ownershipFixed + energyMonthly), "fixed + energy"),
+      envelopeBasis: derived(round(ownershipFixed + energyMonthly - ownershipInsurance - interest), "monthly equivalent less insurance and loan interest"),
       breakdown: {
         depreciation: derived(round(depreciation), `(${purchasePrice} − ${round(residual)} resale) / ${termMonths}`),
         interest: derived(round(interest), `loan on ${round(financed)} at ${round(finance.loanApr.value * 100, 2)}% APR`),
@@ -105,6 +108,7 @@ export function compareAcquisitionModes(args: {
       fixed: derived(round(nltFixed), "term depreciation + lessor cost of capital + insurance + services + margin, plus expected deductibles and the return settlement the renter carries"),
       variableUse: derived(round(energyMonthly), "energy"),
       monthlyEquivalent: derived(round(nltFixed + energyMonthly), "fixed + energy"),
+      envelopeBasis: derived(round(nltFixed + energyMonthly - nltInsurance - nltFinance), "monthly equivalent less insurance and lessor finance"),
       breakdown: {
         depreciation: derived(round(nltCapital), "lessor cost less residual, over the term"),
         finance: derived(round(nltFinance), "lessor cost of capital"),
@@ -125,6 +129,7 @@ export function compareAcquisitionModes(args: {
       fixed: mml.fixedRate,
       variableUse: mml.variableUse,
       monthlyEquivalent: mml.allInMonthly,
+      envelopeBasis: mml.envelopeBasis,
       breakdown: mml.components,
       notes: [
         "Capital is charged as consumption of the asset over its structural life, not as first-owner depreciation.",

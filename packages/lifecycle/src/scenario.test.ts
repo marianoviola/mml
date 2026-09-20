@@ -33,16 +33,26 @@ test("the model is honest about the €450 gap and finds what has to give", () =
   const dir = fresh();
   try {
     const bundle = runFourFiftyScenario({ stateDir: dir, modelVersion: "test" });
-    const shortlist = bundle.steps.find((step) => step.node === "shortlist")!.output as { eligible: Array<{ allIn: number; withinBudget: boolean; life: string }> };
+    const shortlist = bundle.steps.find((step) => step.node === "shortlist")!.output as { eligible: Array<{ fixedRate: number; allIn: number; withinBudget: boolean; life: string }> };
     // Every eligible placement is a family-touring estate; the cheapest is a later life, not a new car.
     assert.ok(shortlist.eligible.length >= 3);
     assert.equal(shortlist.eligible[0].life, "third-life");
     assert.ok(shortlist.eligible[0].allIn < shortlist.eligible[shortlist.eligible.length - 1].allIn);
+    // Chapter 2.3: the budget is tested against the fixed rate, and estimated use is shown beside it, never hidden.
+    for (const quote of shortlist.eligible) {
+      assert.equal(quote.withinBudget, quote.fixedRate <= 450);
+      assert.ok(quote.allIn > quote.fixedRate);
+    }
 
     const answer = bundle.steps.find((step) => step.title.startsWith("The €450 answer"))!.output as {
       withinBudget: boolean; adjustments: Array<{ kind: string; allIn?: number; requiredBudget?: number; annualKm?: number }>;
-      gave: string; contractedAnnualKm: number; contractedBudget: number; allInAtDeclaredDistance: number;
+      gave: string; contractedAnnualKm: number; contractedBudget: number; allInAtDeclaredDistance: number; fixedRateAtDeclaredDistance: number; envelopeBasisAtDeclaredDistance: number;
     };
+    assert.ok(answer.envelopeBasisAtDeclaredDistance < answer.allInAtDeclaredDistance, "Part 1's envelope excludes insurance and finance");
+    if (answer.withinBudget) {
+      assert.equal(answer.gave, "nothing");
+      assert.ok(answer.fixedRateAtDeclaredDistance <= 450);
+    }
     if (!answer.withinBudget) {
       assert.ok(answer.adjustments.length > 0, "an over-budget answer must say what has to change");
       assert.ok(!answer.adjustments.some((adjustment) => adjustment.kind === "none"), "'nothing can be done' is not an answer the model gives");
@@ -55,7 +65,7 @@ test("the model is honest about the €450 gap and finds what has to give", () =
         assert.equal(answer.gave, "budget");
         assert.ok(budget && budget.requiredBudget! > 450, "when no distance fits, the model names the budget that would");
         assert.equal(answer.contractedAnnualKm, 20000);
-        assert.equal(answer.contractedBudget, answer.allInAtDeclaredDistance);
+        assert.equal(answer.contractedBudget, answer.fixedRateAtDeclaredDistance);
       }
     }
   } finally {

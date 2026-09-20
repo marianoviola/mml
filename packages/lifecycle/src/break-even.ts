@@ -31,7 +31,7 @@ export interface PlacementBreakEvens {
   termMonths: number;
   annualKm: number;
   monthlyBudget: number;
-  central: { mml: number; ownership: number; longTermRental: number };
+  central: { mml: number; ownership: number; longTermRental: number; mmlFixed: number };
   rows: BreakEvenRow[];
 }
 
@@ -76,7 +76,7 @@ export function placementBreakEvens(
       placement: { ageYears: offer.ageYears, odometerKm: offer.odometerKm, condition: offer.vehicleCondition },
     });
     const monthly = (mode: string) => comparison.modes.find((candidate) => candidate.mode === mode)!.monthlyEquivalent.value;
-    return { mml: monthly("mml"), ownership: monthly("ownership"), longTermRental: monthly("long-term-rental") };
+    return { mml: monthly("mml"), ownership: monthly("ownership"), longTermRental: monthly("long-term-rental"), mmlFixed: comparison.mml.fixedRate.value };
   };
   const central = modes(base, annualKm);
   const gapToRental = (path: string) => (value: number) => {
@@ -89,16 +89,18 @@ export function placementBreakEvens(
   // 1. Distance: the budget question, bounded below by what a family's use can honestly be.
   const minimumKm = 10000;
   const kmRange: [number, number] = [minimumKm, annualKm];
-  const km = annualKm > minimumKm ? breakEven((value) => modes(base, value).mml, household.monthlyBudget, minimumKm, annualKm, { step: 500 }) : undefined;
+  const km = annualKm > minimumKm ? breakEven((value) => modes(base, value).mmlFixed, household.monthlyBudget, minimumKm, annualKm, { step: 500 }) : undefined;
   rows.push({
-    question: `At what yearly distance does this placement meet €${household.monthlyBudget} all-in under MML?`,
+    question: `At what yearly distance does this placement's fixed Mobility Rate meet €${household.monthlyBudget}?`,
     input: "annualKm",
-    value: km,
+    value: central.mmlFixed <= household.monthlyBudget ? annualKm : km,
     range: kmRange,
     central: annualKm,
-    note: km === undefined
-      ? `None between ${minimumKm} and ${annualKm} km/yr: €${modes(base, minimumKm).mml} at ${minimumKm} km/yr, €${central.mml} at ${annualKm}. The budget or the class has to move.`
-      : `€${modes(base, km).mml} at ${km} km/yr against €${central.mml} at ${annualKm}.`,
+    note: central.mmlFixed <= household.monthlyBudget
+      ? `Already within budget at ${annualKm} km/yr: €${central.mmlFixed} fixed, €${central.mml} with estimated use.`
+      : km === undefined
+        ? `None between ${minimumKm} and ${annualKm} km/yr: €${modes(base, minimumKm).mmlFixed} fixed at ${minimumKm} km/yr, €${central.mmlFixed} at ${annualKm}. The budget or the class has to move.`
+        : `€${modes(base, km).mmlFixed} fixed at ${km} km/yr against €${central.mmlFixed} at ${annualKm}.`,
   });
 
   // 2. Structural life: the thesis's own quantity. How long must the vehicle live for the lifecycle rate to cost what a rental costs?

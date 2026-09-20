@@ -58,8 +58,8 @@ const printStep = (step: { node: string; title: string; output: unknown }) => {
     }
     for (const adjustment of comparison.adjustments ?? []) process.stdout.write(`  → ${adjustment.note}\n`);
   } else if (step.node === "comparison") {
-    const answer = step.output as { allInAtDeclaredDistance: number; withinBudget: boolean; adjustments: Array<{ note: string }>; gave: string; contractedAnnualKm: number; contractedBudget: number };
-    process.stdout.write(`  €${answer.allInAtDeclaredDistance}/month at the declared distance; within budget: ${answer.withinBudget}\n`);
+    const answer = step.output as { fixedRateAtDeclaredDistance: number; allInAtDeclaredDistance: number; envelopeBasisAtDeclaredDistance: number; withinBudget: boolean; adjustments: Array<{ note: string }>; gave: string; contractedAnnualKm: number; contractedBudget: number };
+    process.stdout.write(`  fixed €${answer.fixedRateAtDeclaredDistance}/month at the declared distance (€${answer.allInAtDeclaredDistance} with estimated use; €${answer.envelopeBasisAtDeclaredDistance} on Part 1's envelope basis); within budget: ${answer.withinBudget}\n`);
     for (const adjustment of answer.adjustments) process.stdout.write(`  → ${adjustment.note}\n`);
     process.stdout.write(`  contracted at ${answer.contractedAnnualKm} km/yr for €${answer.contractedBudget}/month; what gave: ${answer.gave}\n`);
   } else if (step.node === "repair") {
@@ -90,12 +90,12 @@ const csvLine = (cells: Array<string | number | undefined>) => cells.map((cell) 
 /** The figure-ready tables of one bundle: mode comparison, sensitivity and break-even rows, each with the set id so sets can be stacked. */
 function bundleTables(bundle: ScenarioBundle): Record<string, string> {
   const set = bundle.assumptionSet.id;
-  let modes = csvLine(["set", "placement", "mode", "fixed", "variable", "allIn"]);
+  let modes = csvLine(["set", "placement", "mode", "fixed", "variable", "allIn", "envelopeBasis"]);
   let sensitivity = csvLine(["set", "placement", "path", "kind", "mml", "ownership", "longTermRental"]);
   let breakEven = csvLine(["set", "placement", "input", "value", "rangeLow", "rangeHigh", "central", "question"]);
   for (const step of bundle.steps) {
     if (step.node === "comparison" && (step.output as { modes?: unknown }).modes) {
-      for (const mode of (step.output as { modes: Array<{ mode: string; fixed: number; variable: number; allIn: number }> }).modes) modes += csvLine([set, step.title, mode.mode, mode.fixed, mode.variable, mode.allIn]);
+      for (const mode of (step.output as { modes: Array<{ mode: string; fixed: number; variable: number; allIn: number; envelopeBasis: number }> }).modes) modes += csvLine([set, step.title, mode.mode, mode.fixed, mode.variable, mode.allIn, mode.envelopeBasis]);
     } else if (step.node === "sensitivity") {
       for (const row of (step.output as { rows: Array<{ path: string; kind: string; mml: number; ownership: number; longTermRental: number }> }).rows) sensitivity += csvLine([set, step.title, row.path, row.kind, row.mml, row.ownership, row.longTermRental]);
     } else if (step.node === "break-even") {
@@ -179,8 +179,8 @@ if (command === "help" || command === "--help" || command === "-h") {
     writeFileSync(`${dir}/${file}`, JSON.stringify(bundle, null, 2) + "\n");
     for (const [name, csv] of Object.entries(bundleTables(bundle))) tables[name] = (tables[name] ?? csv.slice(0, csv.indexOf("\n") + 1)) + csv.slice(csv.indexOf("\n") + 1);
     index.push({ set: id, setHash: bundle.assumptionSet.hash, file, outputHash: bundle.outputHash });
-    const answer = bundle.steps.find((step) => step.title.startsWith("The €450 answer"))!.output as { allInAtDeclaredDistance: number; contractedAnnualKm: number; contractedBudget: number; gave: string };
-    process.stdout.write(`${id.padEnd(11)} ${file}  ${bundle.outputHash}  €${answer.allInAtDeclaredDistance} at 20000 km/yr; contracted €${answer.contractedBudget} at ${answer.contractedAnnualKm} km/yr (${answer.gave} gave)\n`);
+    const answer = bundle.steps.find((step) => step.title.startsWith("The €450 answer"))!.output as { fixedRateAtDeclaredDistance: number; allInAtDeclaredDistance: number; contractedAnnualKm: number; contractedBudget: number; gave: string };
+    process.stdout.write(`${id.padEnd(11)} ${file}  ${bundle.outputHash}  fixed €${answer.fixedRateAtDeclaredDistance} (€${answer.allInAtDeclaredDistance} with use) at 20000 km/yr; contracted €${answer.contractedBudget} at ${answer.contractedAnnualKm} km/yr (${answer.gave} gave)\n`);
   }
   rmSync(scratch, { recursive: true, force: true });
   for (const [name, csv] of Object.entries(tables)) writeFileSync(`${dir}/${name}`, csv);

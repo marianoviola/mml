@@ -22,7 +22,7 @@ export interface ScenarioBundle {
   outputHash: string;
 }
 
-/** Part 1's household: two adults, two children, regular long journeys, no home charging, €450 all-in. */
+/** Part 1's household: two adults, two children, regular long journeys, no home charging, €450 a month for the fixed Mobility Rate. */
 export const FOUR_FIFTY_HOUSEHOLD: Household = {
   adults: 2,
   children: 2,
@@ -57,7 +57,7 @@ export function runFourFiftyScenario(options: {
 
   // 1. Discovery → requirement. The household states the outcome it needs and the budget it declares before quotation.
   const captured = ops.captureHousehold(customerId, FOUR_FIFTY_HOUSEHOLD);
-  steps.push({ node: "requirement", title: "What can my family have for €450 per month, everything included?", output: captured.requirement });
+  steps.push({ node: "requirement", title: "I need a family car. I can spend €450 a month.", output: captured.requirement });
 
   // 2. Shortlist: every eligible vehicle in every life the fleet can place it in, priced as a Mobility Rate.
   const shortlist = ops.shortlist(customerId);
@@ -84,7 +84,7 @@ export function runFourFiftyScenario(options: {
     node: "comparison",
     title: "New Corolla Touring Sports: ownership vs long-term rental vs MML",
     output: {
-      modes: newCorolla.comparison.modes.map((mode) => ({ mode: mode.mode, fixed: mode.fixed.value, variable: mode.variableUse.value, allIn: mode.monthlyEquivalent.value, breakdown: mode.breakdown })),
+      modes: newCorolla.comparison.modes.map((mode) => ({ mode: mode.mode, fixed: mode.fixed.value, variable: mode.variableUse.value, allIn: mode.monthlyEquivalent.value, envelopeBasis: mode.envelopeBasis.value, breakdown: mode.breakdown })),
       withinBudget: newCorolla.quote.withinBudget,
       adjustments: newCorolla.adjustments,
     },
@@ -104,7 +104,9 @@ export function runFourFiftyScenario(options: {
     node: "comparison",
     title: `The €450 answer today: ${chosen.vehicle.make} ${chosen.vehicle.model}, ${chosen.offer.condition}`,
     output: {
+      fixedRateAtDeclaredDistance: chosenQuote.quote.rate.fixedRate.value,
       allInAtDeclaredDistance: chosenQuote.quote.rate.allInMonthly.value,
+      envelopeBasisAtDeclaredDistance: chosenQuote.quote.rate.envelopeBasis.value,
       withinBudget: chosenQuote.quote.withinBudget,
       adjustments: chosenQuote.adjustments,
       gave,

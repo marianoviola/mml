@@ -19,15 +19,19 @@ export interface Placement {
 
 export const NEW_PLACEMENT: Placement = { ageYears: 0, odometerKm: 0, condition: "excellent" };
 
+/** The lines of chapter 2.3's fixed rate, in the chapter's order. */
 export interface MobilityRateInput {
   monthlyCapital: number;
-  monthlyMaintenance: number;
-  monthlyRisk: number;
-  monthlyAgency: number;
-  monthlyLifecycleReserve: number;
   monthlyFinance: number;
+  monthlyMaintenance: number;
+  monthlyWarrantyPool: number;
+  monthlyInsurance: number;
+  monthlyAgency: number;
   monthlyOperations: number;
+  monthlyLifecycleReserve: number;
   monthlyMargin: number;
+  /** Chapter 2.3 and 2.5: the separately disclosed contribution that builds the Material Capital Credit to its floor over the term. */
+  monthlyMaterialCredit: number;
 }
 
 export function mobilityRate(input: MobilityRateInput): number {
@@ -42,11 +46,14 @@ export interface MobilityRateComposition {
   assetCost: ProvenancedValue;
   retentionAtStart: RetentionValues;
   components: Record<keyof MobilityRateInput, ProvenancedValue>;
-  /** Chapter 2.3: the fixed rate. */
+  /** Chapter 2.3: the fixed rate. The household's budget is tested against this. */
   fixedRate: ProvenancedValue;
   /** Chapter 2.3: the separately estimated variable cost of actual use. */
   variableUse: ProvenancedValue;
+  /** Fixed rate plus estimated use: the household's expected total. */
   allInMonthly: ProvenancedValue;
+  /** Part 1's statistical envelope (COICOP purchase and operation of personal transport): expected total less insurance and finance. */
+  envelopeBasis: ProvenancedValue;
 }
 
 /** Liability priced on the driver, comprehensive cover priced on what the vehicle is worth at placement. */
@@ -121,25 +128,28 @@ export function composeMobilityRate(args: {
   const averageOutstanding = assetCost - baseCapitalPerMonth * (termMonths / 2);
   const financeCharge = (averageOutstanding * finance.fleetCostOfCapital.value) / 12;
   const maintenance = maintenancePerYear(vehicle, placement.ageYears + termMonths / 24, annualKm, finance) / 12;
-  const risk =
-    insurancePremiumPerYear(assetCost, household, insurance, true) / 12 +
-    (assetCost * finance.warrantyPoolShare.value) / 12;
+  const insuranceCharge = insurancePremiumPerYear(assetCost, household, insurance, true) / 12;
+  const warrantyPool = (assetCost * finance.warrantyPoolShare.value) / 12;
   const refurbishmentsAhead = life.refurbishmentYears.filter((year) => year > placement.ageYears).length;
   const reserve = (life.refurbishmentCost.value * refurbishmentsAhead) / remainingLifeMonths;
   const agency = finance.agencyFeeMonthly.value;
   const operations = finance.operationsMonthly.value;
-  const subtotal = capital + financeCharge + maintenance + risk + reserve + agency + operations;
+  const subtotal = capital + financeCharge + maintenance + warrantyPool + insuranceCharge + reserve + agency + operations;
   const margin = subtotal * finance.marginShare.value;
+  // The credit contribution is a pass-through to the customer's material-credit ledger: disclosed separately, outside the margin.
+  const materialCredit = floor / termMonths;
 
   const input: MobilityRateInput = {
     monthlyCapital: capital,
     monthlyFinance: financeCharge,
     monthlyMaintenance: maintenance,
-    monthlyRisk: risk,
-    monthlyLifecycleReserve: reserve,
+    monthlyWarrantyPool: warrantyPool,
+    monthlyInsurance: insuranceCharge,
     monthlyAgency: agency,
     monthlyOperations: operations,
+    monthlyLifecycleReserve: reserve,
     monthlyMargin: margin,
+    monthlyMaterialCredit: materialCredit,
   };
   const fixed = mobilityRate(input);
   const variable = energyPerMonth(vehicle, household, annualKm, energy);
@@ -155,14 +165,17 @@ export function composeMobilityRate(args: {
       monthlyCapital: derived(round(capital, 2), `(asset cost − material floor) / ${remainingLifeMonths} remaining months × ${consumption} consumption factor`),
       monthlyFinance: derived(round(financeCharge, 2), "average capital outstanding during the term × fleet cost of capital"),
       monthlyMaintenance: derived(round(maintenance, 2), "scheduled maintenance at mid-term age and distance, plus tyres"),
-      monthlyRisk: derived(round(risk, 2), "fleet insurance (liability plus comprehensive on asset value) plus warranty pool"),
-      monthlyLifecycleReserve: derived(round(reserve, 2), `${refurbishmentsAhead} refurbishment(s) ahead, provisioned over remaining life`),
+      monthlyWarrantyPool: derived(round(warrantyPool, 2), "allowance for unscheduled maintenance: warranty pool share of asset cost"),
+      monthlyInsurance: derived(round(insuranceCharge, 2), "fleet insurance: liability plus comprehensive cover on asset value"),
       monthlyAgency: derived(round(agency, 2), "Agency service fee"),
       monthlyOperations: derived(round(operations, 2), "telematics, administration, reassignment logistics"),
-      monthlyMargin: derived(round(margin, 2), "margin share of subtotal"),
+      monthlyLifecycleReserve: derived(round(reserve, 2), `${refurbishmentsAhead} refurbishment(s) ahead, provisioned over remaining life`),
+      monthlyMargin: derived(round(margin, 2), "margin share of subtotal, credit contribution excluded"),
+      monthlyMaterialCredit: derived(round(materialCredit, 2), `material floor €${round(floor)} built over ${termMonths} months, credited to the customer`),
     },
     fixedRate: derived(round(fixed), "sum of fixed components"),
     variableUse: derived(round(variable), `${vehicle.consumption.per100km.value} ${vehicle.consumption.unit}/100 km × ${energy.realUseUplift.value} real use × ${vehicle.consumption.unit === "l" ? "petrol" : household.homeCharging ? "home electricity" : "public electricity"} price × distance`),
     allInMonthly: derived(round(fixed + variable), "fixed rate + estimated variable use"),
+    envelopeBasis: derived(round(fixed + variable - insuranceCharge - financeCharge), "expected total less insurance and finance, on Part 1's COICOP basis"),
   };
 }
