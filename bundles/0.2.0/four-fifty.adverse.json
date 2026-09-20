@@ -1,0 +1,985 @@
+{
+  "scenario": "four-fifty",
+  "modelVersion": "0.2.0+9251ed3",
+  "generatedAt": "2026-09-15T09:00:00.000Z",
+  "fixtureHashes": {
+    "vehicles.json": "b94681f2d7e3",
+    "offers.json": "1fb17d035429",
+    "finance.json": "128e7d0582c0",
+    "insurance.json": "133c4c09efb2",
+    "residual-curves.json": "1b213a00da8e",
+    "energy.json": "e152458087fa",
+    "repairs.json": "ea2c922728f8"
+  },
+  "assumptionSet": {
+    "id": "adverse",
+    "hash": "b6a5f9808275"
+  },
+  "household": {
+    "adults": 2,
+    "children": 2,
+    "longJourneys": true,
+    "annualKm": 20000,
+    "monthlyBudget": 450,
+    "homeCharging": false,
+    "publicChargingAccess": true,
+    "licenceYears": 15
+  },
+  "steps": [
+    {
+      "node": "requirement",
+      "title": "What can my family have for €450 per month, everything included?",
+      "output": {
+        "mobilityClass": "family-touring",
+        "seats": 4,
+        "minLuggageLitres": 500,
+        "annualKm": 20000,
+        "termMonths": 60,
+        "chargingViable": true,
+        "reasoning": [
+          "Two adults, children, luggage and regular long journeys define the family-touring class.",
+          "Without home charging, long-journey electric use is not dependable; the class stays powertrain-open but hybrids are favoured."
+        ]
+      }
+    },
+    {
+      "node": "shortlist",
+      "title": "Eligible placements, cheapest first",
+      "output": {
+        "eligible": [
+          {
+            "offer": "off-corolla-fleet-6y",
+            "vehicle": "Toyota Corolla Touring Sports Hybrid",
+            "life": "third-life",
+            "fixedRate": 540,
+            "variableUse": 198,
+            "allIn": 738,
+            "withinBudget": false
+          },
+          {
+            "offer": "off-corolla-fleet-3y",
+            "vehicle": "Toyota Corolla Touring Sports Hybrid",
+            "life": "second-life",
+            "fixedRate": 588,
+            "variableUse": 198,
+            "allIn": 786,
+            "withinBudget": false
+          },
+          {
+            "offer": "off-octavia-new-mi",
+            "vehicle": "Škoda Octavia Combi 1.5 TSI",
+            "life": "new",
+            "fixedRate": 612,
+            "variableUse": 264,
+            "allIn": 877,
+            "withinBudget": false
+          },
+          {
+            "offer": "off-corolla-new-mi",
+            "vehicle": "Toyota Corolla Touring Sports Hybrid",
+            "life": "new",
+            "fixedRate": 720,
+            "variableUse": 198,
+            "allIn": 919,
+            "withinBudget": false
+          }
+        ],
+        "excluded": [
+          {
+            "vehicle": "dacia-spring",
+            "reasons": [
+              "Needs 500 L of luggage, has 308 L.",
+              "Battery-electric with regular long journeys and no home charging: viable only with a planned charging routine."
+            ]
+          },
+          {
+            "vehicle": "renault-clio-etech",
+            "reasons": [
+              "Needs 500 L of luggage, has 301 L."
+            ]
+          },
+          {
+            "vehicle": "skoda-enyaq",
+            "reasons": [
+              "Battery-electric with regular long journeys and no home charging: viable only with a planned charging routine."
+            ]
+          },
+          {
+            "vehicle": "vw-id-buzz-7",
+            "reasons": [
+              "Battery-electric with regular long journeys and no home charging: viable only with a planned charging routine."
+            ]
+          },
+          {
+            "vehicle": "suzuki-vitara-hybrid",
+            "reasons": [
+              "Needs 500 L of luggage, has 362 L."
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "node": "comparison",
+      "title": "New Corolla Touring Sports: ownership vs long-term rental vs MML",
+      "output": {
+        "modes": [
+          {
+            "mode": "ownership",
+            "fixed": 593,
+            "variable": 198,
+            "allIn": 792,
+            "breakdown": {
+              "depreciation": {
+                "value": 237,
+                "kind": "derived",
+                "rationale": "(31500 − 17253 resale) / 60"
+              },
+              "interest": {
+                "value": 105,
+                "kind": "derived",
+                "rationale": "loan on 25200 at 9.19% APR"
+              },
+              "insurance": {
+                "value": 127,
+                "kind": "derived",
+                "rationale": "retail premium"
+              },
+              "maintenance": {
+                "value": 77,
+                "kind": "derived",
+                "rationale": "retail servicing and tyres"
+              },
+              "tax": {
+                "value": 20,
+                "kind": "derived",
+                "rationale": "ownership tax"
+              },
+              "repairProvision": {
+                "value": 26,
+                "kind": "derived",
+                "rationale": "expected unplanned repair, unpooled"
+              }
+            }
+          },
+          {
+            "mode": "long-term-rental",
+            "fixed": 502,
+            "variable": 198,
+            "allIn": 701,
+            "breakdown": {
+              "depreciation": {
+                "value": 174,
+                "kind": "derived",
+                "rationale": "lessor cost less residual, over the term"
+              },
+              "finance": {
+                "value": 112,
+                "kind": "derived",
+                "rationale": "lessor cost of capital"
+              },
+              "insurance": {
+                "value": 93,
+                "kind": "derived",
+                "rationale": "fleet premium"
+              },
+              "services": {
+                "value": 85,
+                "kind": "derived",
+                "rationale": "maintenance and administration"
+              },
+              "margin": {
+                "value": 37,
+                "kind": "derived",
+                "rationale": "lessor margin"
+              }
+            }
+          },
+          {
+            "mode": "mml",
+            "fixed": 720,
+            "variable": 198,
+            "allIn": 919,
+            "breakdown": {
+              "monthlyCapital": {
+                "value": 272.36,
+                "kind": "derived",
+                "rationale": "(asset cost − material floor) / 144 remaining months × 1.3 consumption factor"
+              },
+              "monthlyFinance": {
+                "value": 145.57,
+                "kind": "derived",
+                "rationale": "average capital outstanding during the term × fleet cost of capital"
+              },
+              "monthlyMaintenance": {
+                "value": 70.18,
+                "kind": "derived",
+                "rationale": "scheduled maintenance at mid-term age and distance, plus tyres"
+              },
+              "monthlyRisk": {
+                "value": 116.71,
+                "kind": "derived",
+                "rationale": "fleet insurance (liability plus comprehensive on asset value) plus warranty pool"
+              },
+              "monthlyLifecycleReserve": {
+                "value": 34.72,
+                "kind": "derived",
+                "rationale": "2 refurbishment(s) ahead, provisioned over remaining life"
+              },
+              "monthlyAgency": {
+                "value": 25,
+                "kind": "derived",
+                "rationale": "Agency service fee"
+              },
+              "monthlyOperations": {
+                "value": 15,
+                "kind": "derived",
+                "rationale": "telematics, administration, reassignment logistics"
+              },
+              "monthlyMargin": {
+                "value": 40.77,
+                "kind": "derived",
+                "rationale": "margin share of subtotal"
+              }
+            }
+          }
+        ],
+        "withinBudget": false,
+        "adjustments": [
+          {
+            "kind": "budget",
+            "annualKm": 20000,
+            "requiredBudget": 919,
+            "note": "No distance down to 10000 km/yr brings this placement within €450: it needs €919/month at 20000 km/yr and €788/month at 10000 km/yr. What has to give is the budget or the class."
+          }
+        ]
+      }
+    },
+    {
+      "node": "comparison",
+      "title": "The €450 answer today: Toyota Corolla Touring Sports Hybrid, third-life",
+      "output": {
+        "allInAtDeclaredDistance": 738,
+        "withinBudget": false,
+        "adjustments": [
+          {
+            "kind": "budget",
+            "annualKm": 20000,
+            "requiredBudget": 738,
+            "note": "No distance down to 10000 km/yr brings this placement within €450: it needs €738/month at 20000 km/yr and €604/month at 10000 km/yr. What has to give is the budget or the class."
+          }
+        ],
+        "gave": "budget",
+        "contractedAnnualKm": 20000,
+        "contractedBudget": 738,
+        "rate": {
+          "vehicleId": "toyota-corolla-ts-hybrid",
+          "placement": {
+            "ageYears": 6,
+            "odometerKm": 112000,
+            "condition": "good"
+          },
+          "termMonths": 60,
+          "annualKm": 20000,
+          "assetCost": {
+            "value": 16836,
+            "kind": "derived",
+            "rationale": "mobility value at placement age"
+          },
+          "retentionAtStart": {
+            "ageYears": 6,
+            "odometerKm": 112000,
+            "condition": "good",
+            "mobilityValue": {
+              "value": 16836,
+              "kind": "derived",
+              "rationale": "list price × age curve × distance adjustment × condition"
+            },
+            "componentRetentionValue": {
+              "value": 9940,
+              "kind": "derived",
+              "rationale": "list price × component retention curve"
+            },
+            "materialRetentionValue": {
+              "value": 1190,
+              "kind": "derived",
+              "rationale": "kerb mass × net recoverable value per kg"
+            },
+            "materialCapitalFloor": {
+              "value": 1071,
+              "kind": "derived",
+              "rationale": "90% of material retention value, held as the credit floor"
+            }
+          },
+          "components": {
+            "monthlyCapital": {
+              "value": 218.96,
+              "kind": "derived",
+              "rationale": "(asset cost − material floor) / 72 remaining months × 1 consumption factor"
+            },
+            "monthlyFinance": {
+              "value": 59.89,
+              "kind": "derived",
+              "rationale": "average capital outstanding during the term × fleet cost of capital"
+            },
+            "monthlyMaintenance": {
+              "value": 80.04,
+              "kind": "derived",
+              "rationale": "scheduled maintenance at mid-term age and distance, plus tyres"
+            },
+            "monthlyRisk": {
+              "value": 75.9,
+              "kind": "derived",
+              "rationale": "fleet insurance (liability plus comprehensive on asset value) plus warranty pool"
+            },
+            "monthlyLifecycleReserve": {
+              "value": 34.72,
+              "kind": "derived",
+              "rationale": "1 refurbishment(s) ahead, provisioned over remaining life"
+            },
+            "monthlyAgency": {
+              "value": 25,
+              "kind": "derived",
+              "rationale": "Agency service fee"
+            },
+            "monthlyOperations": {
+              "value": 15,
+              "kind": "derived",
+              "rationale": "telematics, administration, reassignment logistics"
+            },
+            "monthlyMargin": {
+              "value": 30.57,
+              "kind": "derived",
+              "rationale": "margin share of subtotal"
+            }
+          },
+          "fixedRate": {
+            "value": 540,
+            "kind": "derived",
+            "rationale": "sum of fixed components"
+          },
+          "variableUse": {
+            "value": 198,
+            "kind": "derived",
+            "rationale": "4.5 l/100 km × 1.15 real use × petrol price × distance"
+          },
+          "allInMonthly": {
+            "value": 738,
+            "kind": "derived",
+            "rationale": "fixed rate + estimated variable use"
+          }
+        }
+      }
+    },
+    {
+      "node": "ownership",
+      "title": "Eighteen months in service",
+      "output": {
+        "vehicle": {
+          "ageYears": 7.5,
+          "odometerKm": 142000,
+          "condition": "good",
+          "openEvents": []
+        },
+        "contract": {
+          "offerId": "off-corolla-fleet-6y",
+          "vehicleId": "toyota-corolla-ts-hybrid",
+          "placement": {
+            "ageYears": 6,
+            "odometerKm": 112000,
+            "condition": "good"
+          },
+          "termMonths": 60,
+          "annualKm": 20000,
+          "startedAt": "2026-09-15",
+          "monthsElapsed": 18,
+          "fixedRate": 540,
+          "variableUseEstimate": 198,
+          "materialCapitalCredit": 321,
+          "materialCapitalFloor": 1071
+        }
+      }
+    },
+    {
+      "node": "repair",
+      "title": "Stone chip cracks the headlamp lens",
+      "output": {
+        "assessment": {
+          "eventId": "headlamp-lens-stone",
+          "state": "safety-defect",
+          "response": "intervene",
+          "chosen": "assembly-replacement",
+          "chosenCost": {
+            "value": 1100,
+            "kind": "derived",
+            "rationale": "assembly-replacement"
+          },
+          "savingVersusAssembly": {
+            "value": 0,
+            "kind": "derived",
+            "rationale": "assembly replacement cost − chosen repair cost"
+          },
+          "downtimeDays": 1,
+          "replacementMobilityRequired": false,
+          "reasoning": [
+            "A safety defect requires intervention before the vehicle continues in service.",
+            "The lamp is a sealed assembly on this model line: the lens cannot be replaced on its own, so the whole unit is the repair unit."
+          ]
+        },
+        "continuity": "No interruption: the vehicle stays in service while the repair is scheduled.",
+        "ownershipContrast": "Under ownership the household would pay €1100 for the assembly and arrange its own transport."
+      }
+    },
+    {
+      "node": "repair",
+      "title": "Hail dents the roof",
+      "output": {
+        "assessment": {
+          "eventId": "hail-roof",
+          "state": "cosmetic",
+          "response": "local-repair",
+          "chosen": "modular-repair",
+          "chosenCost": {
+            "value": 600,
+            "kind": "derived",
+            "rationale": "modular-repair"
+          },
+          "alternativeCost": {
+            "value": 2800,
+            "kind": "assumption",
+            "rationale": "roof panel replacement and paint"
+          },
+          "savingVersusAssembly": {
+            "value": 2200,
+            "kind": "derived",
+            "rationale": "assembly replacement cost − chosen repair cost"
+          },
+          "downtimeDays": 1,
+          "replacementMobilityRequired": false,
+          "ownershipValueLoss": {
+            "value": 7000,
+            "kind": "assumption",
+            "rationale": "resale discount on a hail-damaged five-year-old family estate"
+          },
+          "reasoning": [
+            "Cosmetic evidence of normal use is mitigated or locally repaired, not treated as a defect.",
+            "Modular repair at €600 preserves the assembly worth €2800."
+          ]
+        },
+        "continuity": "No interruption: the vehicle stays in service while the repair is scheduled.",
+        "ownershipContrast": "Under ownership the same event would cost the household about €7000 of resale value on top of the repair; under MML the asset ledger carries it."
+      }
+    },
+    {
+      "node": "repair",
+      "title": "Hybrid battery capacity below threshold",
+      "output": {
+        "assessment": {
+          "eventId": "hybrid-battery-module",
+          "state": "maintenance-shortfall",
+          "response": "correct",
+          "chosen": "modular-repair",
+          "chosenCost": {
+            "value": 900,
+            "kind": "derived",
+            "rationale": "modular-repair"
+          },
+          "alternativeCost": {
+            "value": 3200,
+            "kind": "assumption",
+            "rationale": "complete hybrid battery pack"
+          },
+          "savingVersusAssembly": {
+            "value": 2300,
+            "kind": "derived",
+            "rationale": "assembly replacement cost − chosen repair cost"
+          },
+          "downtimeDays": 2,
+          "replacementMobilityRequired": true,
+          "reasoning": [
+            "A maintenance shortfall is corrected and recorded; it may indicate neglect.",
+            "Modular repair at €900 preserves the assembly worth €3200.",
+            "2 day(s) off the road: the continuity response assigns replacement mobility."
+          ]
+        },
+        "continuity": "Replacement mobility assigned for 2 day(s); the Mobility Rate does not change.",
+        "ownershipContrast": "Under ownership the household would pay €3200 for the assembly and arrange its own transport."
+      }
+    },
+    {
+      "node": "continuation",
+      "title": "Continue, refurbish or retire and reassign?",
+      "output": {
+        "decision": "reassign-customer",
+        "reasoning": [
+          "Repaired, the vehicle is worth €12721 against €9710 as components and material: it stays a mobility asset.",
+          "Moving the customer costs the fleet €21936 over 36 months against €22032 to continue; the vehicle is repaired and placed elsewhere."
+        ],
+        "asset": {
+          "valueAsRepairedVehicle": {
+            "value": 12721,
+            "kind": "derived",
+            "rationale": "mobility value − pending repair"
+          },
+          "valueAsComponentsAndMaterial": {
+            "value": 9710,
+            "kind": "derived",
+            "rationale": "component retention value + material retention value"
+          },
+          "remainsMobilityAsset": true
+        },
+        "placement": {
+          "continueCost": {
+            "value": 22032,
+            "kind": "derived",
+            "rationale": "pending repair + current fixed rate × horizon"
+          },
+          "reassignCost": {
+            "value": 21936,
+            "kind": "derived",
+            "rationale": "reassignment cost + alternative fixed rate × horizon"
+          }
+        },
+        "retention": {
+          "ageYears": 8,
+          "odometerKm": 152000,
+          "condition": "good",
+          "mobilityValue": {
+            "value": 13621,
+            "kind": "derived",
+            "rationale": "list price × age curve × distance adjustment × condition"
+          },
+          "componentRetentionValue": {
+            "value": 8520,
+            "kind": "derived",
+            "rationale": "list price × component retention curve"
+          },
+          "materialRetentionValue": {
+            "value": 1190,
+            "kind": "derived",
+            "rationale": "kerb mass × net recoverable value per kg"
+          },
+          "materialCapitalFloor": {
+            "value": 1071,
+            "kind": "derived",
+            "rationale": "90% of material retention value, held as the credit floor"
+          }
+        },
+        "alternative": {
+          "offer": "off-corolla-fleet-3y",
+          "fixedRate": 601
+        }
+      }
+    },
+    {
+      "node": "sensitivity",
+      "title": "What moves the answer: +10% on each input, Toyota Corolla Touring Sports Hybrid third-life at 20000 km/yr",
+      "output": {
+        "baseline": {
+          "mml": 738,
+          "ownership": 578,
+          "longTermRental": 525
+        },
+        "leading": [
+          "curves.conditionAdjustment.good",
+          "curves.curves.hev",
+          "vehicle.listPrice",
+          "energy.petrolPerLitre",
+          "energy.realUseUplift",
+          "vehicle.consumption.per100km",
+          "curves.referenceAnnualKm",
+          "vehicle.lifecycle.structuralLifeYears",
+          "finance.laterLifeConsumptionFactor",
+          "vehicle.maintenancePerYear"
+        ],
+        "rows": [
+          {
+            "path": "curves.conditionAdjustment.good",
+            "kind": "assumption",
+            "mml": 36,
+            "ownership": -17,
+            "longTermRental": -15
+          },
+          {
+            "path": "curves.curves.hev",
+            "kind": "assumption",
+            "mml": 36,
+            "ownership": -17,
+            "longTermRental": -15
+          },
+          {
+            "path": "vehicle.listPrice",
+            "kind": "evidence",
+            "mml": 36,
+            "ownership": -17,
+            "longTermRental": -15
+          },
+          {
+            "path": "energy.petrolPerLitre",
+            "kind": "assumption",
+            "mml": 20,
+            "ownership": 20,
+            "longTermRental": 20
+          },
+          {
+            "path": "energy.realUseUplift",
+            "kind": "assumption",
+            "mml": 20,
+            "ownership": 20,
+            "longTermRental": 20
+          },
+          {
+            "path": "vehicle.consumption.per100km",
+            "kind": "evidence",
+            "mml": 20,
+            "ownership": 20,
+            "longTermRental": 20
+          },
+          {
+            "path": "curves.referenceAnnualKm",
+            "kind": "assumption",
+            "mml": 15,
+            "ownership": -13,
+            "longTermRental": -12
+          },
+          {
+            "path": "vehicle.lifecycle.structuralLifeYears",
+            "kind": "assumption",
+            "mml": -38,
+            "ownership": 0,
+            "longTermRental": 0
+          },
+          {
+            "path": "finance.laterLifeConsumptionFactor",
+            "kind": "assumption",
+            "mml": 24,
+            "ownership": 0,
+            "longTermRental": 0
+          },
+          {
+            "path": "vehicle.maintenancePerYear",
+            "kind": "evidence",
+            "mml": 6,
+            "ownership": 6,
+            "longTermRental": 6
+          },
+          {
+            "path": "insurance.comprehensiveShareOfValue",
+            "kind": "assumption",
+            "mml": 5,
+            "ownership": 5,
+            "longTermRental": 4
+          },
+          {
+            "path": "finance.maintenanceReferenceAnnualKm",
+            "kind": "assumption",
+            "mml": -3,
+            "ownership": -4,
+            "longTermRental": -4
+          },
+          {
+            "path": "curves.kmAdjustmentPer5000",
+            "kind": "assumption",
+            "mml": -3,
+            "ownership": 4,
+            "longTermRental": 3
+          },
+          {
+            "path": "insurance.rcPremiumPerYear",
+            "kind": "evidence",
+            "mml": 3,
+            "ownership": 3,
+            "longTermRental": 3
+          },
+          {
+            "path": "finance.tyresPerKm",
+            "kind": "assumption",
+            "mml": 3,
+            "ownership": 2,
+            "longTermRental": 3
+          },
+          {
+            "path": "finance.fleetCostOfCapital",
+            "kind": "assumption",
+            "mml": 7,
+            "ownership": 0,
+            "longTermRental": 0
+          },
+          {
+            "path": "finance.loanApr",
+            "kind": "evidence",
+            "mml": 0,
+            "ownership": 6,
+            "longTermRental": 0
+          },
+          {
+            "path": "finance.nltCostOfCapital",
+            "kind": "assumption",
+            "mml": 0,
+            "ownership": 0,
+            "longTermRental": 6
+          },
+          {
+            "path": "finance.retailMaintenanceUplift",
+            "kind": "assumption",
+            "mml": 0,
+            "ownership": 6,
+            "longTermRental": 0
+          },
+          {
+            "path": "finance.fleetDiscount",
+            "kind": "assumption",
+            "mml": 0,
+            "ownership": 0,
+            "longTermRental": -5
+          },
+          {
+            "path": "finance.loanFinancedShare",
+            "kind": "assumption",
+            "mml": 0,
+            "ownership": 5,
+            "longTermRental": 0
+          },
+          {
+            "path": "finance.maintenanceAgeFactorPerYear",
+            "kind": "assumption",
+            "mml": 2,
+            "ownership": 1,
+            "longTermRental": 1
+          },
+          {
+            "path": "finance.maintenanceKmExponent",
+            "kind": "assumption",
+            "mml": 2,
+            "ownership": 1,
+            "longTermRental": 1
+          },
+          {
+            "path": "finance.marginShare",
+            "kind": "assumption",
+            "mml": 4,
+            "ownership": 0,
+            "longTermRental": 0
+          },
+          {
+            "path": "vehicle.lifecycle.refurbishmentCost",
+            "kind": "assumption",
+            "mml": 4,
+            "ownership": 0,
+            "longTermRental": 0
+          },
+          {
+            "path": "finance.agencyFeeMonthly",
+            "kind": "assumption",
+            "mml": 3,
+            "ownership": 0,
+            "longTermRental": 0
+          },
+          {
+            "path": "finance.operationsMonthly",
+            "kind": "assumption",
+            "mml": 2,
+            "ownership": 0,
+            "longTermRental": 1
+          },
+          {
+            "path": "insurance.fleetDiscount",
+            "kind": "assumption",
+            "mml": -1,
+            "ownership": 0,
+            "longTermRental": -2
+          },
+          {
+            "path": "finance.nltMarginShare",
+            "kind": "assumption",
+            "mml": 0,
+            "ownership": 0,
+            "longTermRental": 2
+          },
+          {
+            "path": "finance.ownershipTaxMonthly",
+            "kind": "assumption",
+            "mml": 0,
+            "ownership": 2,
+            "longTermRental": 0
+          },
+          {
+            "path": "curves.materialCapitalFloorShare",
+            "kind": "assumption",
+            "mml": -1,
+            "ownership": 0,
+            "longTermRental": 0
+          },
+          {
+            "path": "curves.materialValuePerKg",
+            "kind": "assumption",
+            "mml": -1,
+            "ownership": 0,
+            "longTermRental": 0
+          },
+          {
+            "path": "finance.ownershipRepairProvisionShare",
+            "kind": "assumption",
+            "mml": 0,
+            "ownership": 1,
+            "longTermRental": 0
+          },
+          {
+            "path": "finance.warrantyPoolShare",
+            "kind": "assumption",
+            "mml": 1,
+            "ownership": 0,
+            "longTermRental": 0
+          },
+          {
+            "path": "vehicle.kerbMassKg",
+            "kind": "evidence",
+            "mml": -1,
+            "ownership": 0,
+            "longTermRental": 0
+          }
+        ],
+        "inert": [
+          "curves.componentRetention",
+          "curves.conditionAdjustment.excellent",
+          "curves.conditionAdjustment.fair",
+          "curves.conditionAdjustment.poor",
+          "curves.curves.bev",
+          "curves.curves.ice",
+          "energy.electricityHomePerKwh",
+          "energy.electricityPublicPerKwh",
+          "finance.firstLifeConsumptionFactor",
+          "finance.reassignmentCost",
+          "insurance.youngDriverUplift",
+          "vehicle.lifecycle.softwareSupportHorizonYears"
+        ]
+      }
+    },
+    {
+      "node": "break-even",
+      "title": "What would have to be true: Corolla Touring Sports Hybrid third-life at 20000 km/yr",
+      "output": {
+        "central": {
+          "mml": 738,
+          "ownership": 578,
+          "longTermRental": 525
+        },
+        "rows": [
+          {
+            "question": "At what yearly distance does this placement meet €450 all-in under MML?",
+            "input": "annualKm",
+            "range": [
+              10000,
+              20000
+            ],
+            "central": 20000,
+            "note": "None between 10000 and 20000 km/yr: €604 at 10000 km/yr, €738 at 20000. The budget or the class has to move."
+          },
+          {
+            "question": "How long must the vehicle's structural life be for MML to cost what long-term rental costs?",
+            "input": "vehicle.lifecycle.structuralLifeYears",
+            "range": [
+              12,
+              30
+            ],
+            "central": 12,
+            "note": "No structural life up to 30 years closes the gap: MML €738 against rental €525 at 12 years."
+          },
+          {
+            "question": "At what fleet cost of capital does MML cost what long-term rental costs?",
+            "input": "finance.fleetCostOfCapital",
+            "range": [
+              0,
+              0.15
+            ],
+            "central": 0.07,
+            "note": "No cost of capital between 0 and 15% closes the gap on its own."
+          },
+          {
+            "question": "At what later-life consumption factor does MML cost what long-term rental costs?",
+            "input": "finance.laterLifeConsumptionFactor",
+            "range": [
+              0.2,
+              2
+            ],
+            "central": 1,
+            "note": "No consumption factor between 0.2 and 2 closes the gap on its own."
+          }
+        ]
+      }
+    },
+    {
+      "node": "break-even",
+      "title": "What would have to be true: Corolla Touring Sports new at 20000 km/yr",
+      "output": {
+        "central": {
+          "mml": 919,
+          "ownership": 792,
+          "longTermRental": 701
+        },
+        "rows": [
+          {
+            "question": "At what yearly distance does this placement meet €450 all-in under MML?",
+            "input": "annualKm",
+            "range": [
+              10000,
+              20000
+            ],
+            "central": 20000,
+            "note": "None between 10000 and 20000 km/yr: €788 at 10000 km/yr, €919 at 20000. The budget or the class has to move."
+          },
+          {
+            "question": "How long must the vehicle's structural life be for MML to cost what long-term rental costs?",
+            "input": "vehicle.lifecycle.structuralLifeYears",
+            "range": [
+              6,
+              30
+            ],
+            "central": 12,
+            "note": "No structural life up to 30 years closes the gap: MML €919 against rental €701 at 12 years."
+          },
+          {
+            "question": "At what fleet cost of capital does MML cost what long-term rental costs?",
+            "input": "finance.fleetCostOfCapital",
+            "range": [
+              0,
+              0.15
+            ],
+            "central": 0.07,
+            "note": "No cost of capital between 0 and 15% closes the gap on its own."
+          },
+          {
+            "question": "At what first-life consumption factor does MML cost what long-term rental costs?",
+            "input": "finance.firstLifeConsumptionFactor",
+            "value": 0.32,
+            "range": [
+              0.2,
+              2
+            ],
+            "central": 1.3,
+            "note": "0.32 against the central 1.3."
+          }
+        ]
+      }
+    },
+    {
+      "node": "context",
+      "title": "Customer context after the journey",
+      "output": [
+        "requirement: Household of 4 declares €450/month all-in; class family-touring, 20000 km/yr, 60 months.",
+        "shortlist: 4 eligible placement(s); 0 within €450. Cheapest: off-corolla-fleet-6y at €738.",
+        "comparison: Quoted off-corolla-new-mi: ownership €792, rental €701, MML €919 all-in.",
+        "comparison: Quoted off-corolla-fleet-6y: ownership €578, rental €525, MML €738 all-in.",
+        "contract: Contract on off-corolla-fleet-6y (Toyota Corolla Touring Sports Hybrid, third-life): fixed €540/month, variable ≈ €198, term 60 months.",
+        "ownership: 18 month(s) elapsed, 30000 km driven; vehicle now 7.5 years, 142000 km. Material Capital Credit €321.",
+        "repair: Stone chip cracks the headlamp lens: safety-defect, assembly-replacement at €1100. No interruption: the vehicle stays in service while the repair is scheduled.",
+        "service: Event headlamp-lens-stone resolved and recorded in the asset ledger.",
+        "repair: Hail dents the roof and bonnet: cosmetic, modular-repair at €600 (saves €2200 against the assembly). No interruption: the vehicle stays in service while the repair is scheduled.",
+        "ownership: 6 month(s) elapsed, 10000 km driven; vehicle now 8 years, 152000 km. Material Capital Credit €428.",
+        "repair: Hybrid battery capacity below threshold: maintenance-shortfall, modular-repair at €900 (saves €2300 against the assembly). Replacement mobility assigned for 2 day(s); the Mobility Rate does not change.",
+        "continuation: Decision at 8 years / 152000 km: reassign-customer. Mobility value €13621, CRV €8520, MRV €1190."
+      ]
+    }
+  ],
+  "outputHash": "7a55ee227b765dce"
+}
