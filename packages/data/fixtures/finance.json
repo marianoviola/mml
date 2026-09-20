@@ -15,5 +15,9 @@
   "ownershipTaxMonthly": { "value": 20, "kind": "assumption", "rationale": "ownership tax band" },
   "retailMaintenanceUplift": { "value": 1.15, "kind": "assumption", "rationale": "retail vs fleet servicing price" },
   "ownershipRepairProvisionShare": { "value": 0.01, "kind": "assumption", "rationale": "annual expected unplanned repair for a private owner without risk pooling, share of purchase price" },
-  "reassignmentCost": { "value": 300, "kind": "assumption", "rationale": "one-off logistics, handover and records when a customer moves vehicle" }
+  "reassignmentCost": { "value": 300, "kind": "assumption", "rationale": "one-off logistics, handover and records when a customer moves vehicle" },
+  "maintenanceAgeFactorPerYear": { "value": 0.04, "kind": "assumption", "rationale": "scheduled maintenance cost grows 4% per year of vehicle age" },
+  "maintenanceReferenceAnnualKm": { "value": 15000, "kind": "assumption", "rationale": "distance the maintenancePerYear figures assume" },
+  "maintenanceKmExponent": { "value": 0.7, "kind": "assumption", "rationale": "maintenance scales sub-linearly with distance: fixed service intervals plus wear" },
+  "tyresPerKm": { "value": 0.015, "kind": "assumption", "rationale": "tyre wear, €/km, mid-range family-car tyres" }
 }

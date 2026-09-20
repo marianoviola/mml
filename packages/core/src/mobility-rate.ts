@@ -59,10 +59,10 @@ export function insurancePremiumPerYear(
   return fleet ? base * (1 - tariff.fleetDiscount.value) : base;
 }
 
-export function maintenancePerYear(vehicle: Vehicle, ageYears: number, annualKm: number, uplift = 1): number {
-  const ageFactor = 1 + 0.04 * ageYears;
-  const kmFactor = Math.pow(annualKm / 15000, 0.7);
-  const tyres = 0.015 * annualKm;
+export function maintenancePerYear(vehicle: Vehicle, ageYears: number, annualKm: number, finance: FinanceProducts, uplift = 1): number {
+  const ageFactor = 1 + finance.maintenanceAgeFactorPerYear.value * ageYears;
+  const kmFactor = Math.pow(annualKm / finance.maintenanceReferenceAnnualKm.value, finance.maintenanceKmExponent.value);
+  const tyres = finance.tyresPerKm.value * annualKm;
   return vehicle.maintenancePerYear.value * ageFactor * kmFactor * uplift + tyres;
 }
 
@@ -107,7 +107,7 @@ export function composeMobilityRate(args: {
   const capital = baseCapitalPerMonth * consumption;
   const averageOutstanding = assetCost - baseCapitalPerMonth * (termMonths / 2);
   const financeCharge = (averageOutstanding * finance.fleetCostOfCapital.value) / 12;
-  const maintenance = maintenancePerYear(vehicle, placement.ageYears + termMonths / 24, annualKm) / 12;
+  const maintenance = maintenancePerYear(vehicle, placement.ageYears + termMonths / 24, annualKm, finance) / 12;
   const risk =
     insurancePremiumPerYear(vehicle, household, insurance, true) / 12 +
     (assetCost * finance.warrantyPoolShare.value) / 12;

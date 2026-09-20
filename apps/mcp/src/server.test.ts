@@ -28,7 +28,7 @@ test("the server exposes the lifecycle graph as tools, the context as a resource
     const tools = (await client.listTools()).tools.map((tool) => tool.name).sort();
     assert.deepEqual(tools, [
       "advance_time", "capture_household", "get_context", "list_assumptions", "list_catalogue", "quote_placement",
-      "report_event", "resolve_event", "review_continuation", "shortlist_placements", "sign_contract",
+      "report_event", "resolve_event", "review_continuation", "sensitivity_placement", "shortlist_placements", "sign_contract",
     ]);
     const prompts = (await client.listPrompts()).prompts.map((prompt) => prompt.name);
     assert.deepEqual(prompts, ["agency"]);
@@ -60,6 +60,11 @@ test("an orchestrator can walk the €450 journey through the tools and read the
     const quote = await call("quote_placement", { customer_id: "rossi", offer_id: cheapest.offerId });
     assert.equal(quote.value.comparison.modes.length, 3);
     const km = quote.value.quote.withinBudget ? 20000 : quote.value.adjustments.find((a: { kind: string }) => a.kind === "distance")?.annualKm ?? 20000;
+
+    const sensitivity = await call("sensitivity_placement", { customer_id: "rossi", offer_id: cheapest.offerId, annual_km: km });
+    assert.equal(sensitivity.value.baseline.mml, quote.value.adjustments.find((a: { kind: string }) => a.kind === "distance")?.allIn ?? quote.value.quote.rate.allInMonthly.value);
+    assert.ok(sensitivity.value.leading.includes("vehicle.listPrice"));
+    assert.ok(sensitivity.value.rows.every((row: { kind: string }) => row.kind === "assumption"), "nothing is evidence yet, and the table must say so");
 
     const contract = await call("sign_contract", { customer_id: "rossi", offer_id: cheapest.offerId, started_at: "2026-09-15", annual_km: km });
     assert.equal(contract.value.offerId, cheapest.offerId);

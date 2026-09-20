@@ -12,6 +12,22 @@ export interface ProvenancedValue {
   rationale?: string;
 }
 
+/** A curve or schedule carries one status for all its points: a residual curve is one claim, not sixteen. */
+export interface ProvenancedSeries {
+  values: number[];
+  kind: EvidenceKind;
+  source?: string;
+  rationale?: string;
+}
+
+export const isProvenancedValue = (candidate: unknown): candidate is ProvenancedValue =>
+  typeof candidate === "object" && candidate !== null &&
+  typeof (candidate as ProvenancedValue).value === "number" && typeof (candidate as ProvenancedValue).kind === "string";
+
+export const isProvenancedSeries = (candidate: unknown): candidate is ProvenancedSeries =>
+  typeof candidate === "object" && candidate !== null &&
+  Array.isArray((candidate as ProvenancedSeries).values) && typeof (candidate as ProvenancedSeries).kind === "string";
+
 export const evidence = (value: number, source: string): ProvenancedValue => ({
   value,
   kind: "evidence",

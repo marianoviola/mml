@@ -17,7 +17,7 @@ test("the €450 scenario runs end to end, deterministically, and every step lan
     assert.equal(first.outputHash, second.outputHash, "same fixtures must give the same bundle");
 
     const nodes = first.steps.map((step) => step.node);
-    for (const node of ["requirement", "shortlist", "comparison", "ownership", "repair", "continuation"]) {
+    for (const node of ["requirement", "shortlist", "comparison", "ownership", "repair", "continuation", "sensitivity"]) {
       assert.ok(nodes.includes(node), `missing ${node}`);
     }
     const context = new ContextStore(dir).get("four-fifty");
@@ -95,6 +95,31 @@ test("operations refuse to run out of order and validate ids", () => {
     assert.throws(() => ops.advance("c1", 6), /no active contract/);
     assert.throws(() => ops.quote("c1", "no-such-offer"), /unknown offer/);
     assert.throws(() => new ContextStore(dir).get("../etc/passwd"), RangeError);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("the bundle says what its answer rests on: the sensitivity step ranks inputs and lists what does not matter", () => {
+  const dir = fresh();
+  try {
+    const bundle = runFourFiftyScenario({ stateDir: dir, modelVersion: "test" });
+    const answer = bundle.steps.find((step) => step.title.startsWith("The €450 answer"))!.output as { contractedAnnualKm: number; adjustments: Array<{ kind: string; allIn?: number }>; allInAtDeclaredDistance: number };
+    const sensitivity = bundle.steps.find((step) => step.node === "sensitivity")!.output as {
+      baseline: { mml: number; ownership: number; longTermRental: number };
+      leading: string[];
+      rows: Array<{ path: string; kind: string; mml: number; ownership: number; longTermRental: number }>;
+      inert: string[];
+    };
+    const contracted = answer.adjustments.find((adjustment) => adjustment.kind === "distance")?.allIn ?? answer.allInAtDeclaredDistance;
+    assert.equal(sensitivity.baseline.mml, contracted, "sensitivity is run on the contracted placement at the contracted distance");
+    assert.ok(sensitivity.leading.includes("vehicle.listPrice"));
+    assert.ok(sensitivity.leading.includes("curves.curves.hev"), "the residual curve is now a provenanced input and shows its weight");
+    assert.ok(sensitivity.leading.includes("vehicle.lifecycle.structuralLifeYears"));
+    assert.ok(sensitivity.rows.every((row) => row.mml !== 0 || row.ownership !== 0 || row.longTermRental !== 0));
+    assert.ok(sensitivity.inert.includes("finance.reassignmentCost"), "a quote does not depend on reassignment cost, and the bundle says so");
+    const structural = sensitivity.rows.find((row) => row.path === "vehicle.lifecycle.structuralLifeYears")!;
+    assert.ok(structural.mml < 0 && structural.ownership === 0, "structural life is MML's own lever; ownership does not see it");
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

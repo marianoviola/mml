@@ -40,10 +40,10 @@ export function estimateRetention(
   const expectedKm = curves.referenceAnnualKm.value * ageYears;
   const kmAdjustment = 1 - (curves.kmAdjustmentPer5000.value * (odometerKm - expectedKm)) / 5000;
   const boundedKm = Math.min(1.1, Math.max(0.6, kmAdjustment));
-  const conditionAdjustment = curves.conditionAdjustment[condition];
+  const conditionAdjustment = curves.conditionAdjustment[condition].value;
 
-  const mobility = list * interpolate(curves.curves[vehicle.residualCurve], ageYears) * boundedKm * conditionAdjustment;
-  const components = list * interpolate(curves.componentRetention, ageYears) * (condition === "poor" ? 0.85 : 1);
+  const mobility = list * interpolate(curves.curves[vehicle.residualCurve].values, ageYears) * boundedKm * conditionAdjustment;
+  const components = list * interpolate(curves.componentRetention.values, ageYears) * (condition === "poor" ? 0.85 : 1);
   const material = vehicle.kerbMassKg.value * curves.materialValuePerKg.value;
 
   return {
@@ -53,6 +53,6 @@ export function estimateRetention(
     mobilityValue: derived(round(mobility), "list price × age curve × distance adjustment × condition"),
     componentRetentionValue: derived(round(components), "list price × component retention curve"),
     materialRetentionValue: derived(round(material), "kerb mass × net recoverable value per kg"),
-    materialCapitalFloor: derived(round(material * 0.9), "90% of material retention value, held as the credit floor"),
+    materialCapitalFloor: derived(round(material * curves.materialCapitalFloorShare.value), `${round(curves.materialCapitalFloorShare.value * 100)}% of material retention value, held as the credit floor`),
   };
 }

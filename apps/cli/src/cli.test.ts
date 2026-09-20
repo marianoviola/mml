@@ -29,3 +29,11 @@ test("assumptions lists provenance and unknown commands fail", () => {
   assert.match(stdout, /assumption.*finance\.fleetCostOfCapital/);
   assert.throws(() => execFileSync("node", [entry, "nope"], { stdio: "pipe" }));
 });
+
+test("sensitivity ranks what moves a placement and rejects unknown offers", () => {
+  const stdout = execFileSync("node", [entry, "sensitivity", "off-corolla-fleet-6y", "--km", "12500"]).toString();
+  assert.match(stdout, /MML 428/);
+  assert.match(stdout, /vehicle\.listPrice\s+assumption\s+\+\d/);
+  assert.match(stdout, /Leading: /);
+  assert.throws(() => execFileSync("node", [entry, "sensitivity", "off-nope"], { stdio: "pipe" }));
+});

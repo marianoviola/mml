@@ -135,6 +135,19 @@ export function runFourFiftyScenario(options: {
     },
   });
 
+  // 8. What moves the answer: every provenanced input shocked +10% on the contracted placement, at the contracted distance.
+  const sensitivity = ops.sensitivity(customerId, chosen.offer.id, { annualKm: contractKm });
+  steps.push({
+    node: "sensitivity",
+    title: `What moves the answer: +${Math.round(sensitivity.shock * 100)}% on each input, ${chosen.vehicle.make} ${chosen.vehicle.model} ${chosen.offer.condition} at ${contractKm} km/yr`,
+    output: {
+      baseline: sensitivity.baseline,
+      leading: sensitivity.leading,
+      rows: sensitivity.rows.filter((row) => row.weight > 0).map(({ path, kind, deltas }) => ({ path, kind, ...deltas })),
+      inert: sensitivity.rows.filter((row) => row.weight === 0).map((row) => row.path),
+    },
+  });
+
   const context = ops.context(customerId);
   steps.push({ node: "context", title: "Customer context after the journey", output: context.timeline.map((entry) => `${entry.node}: ${entry.summary}`) });
 

@@ -199,6 +199,31 @@ export function createServer(dir: string = stateDir): McpServer {
   );
 
   server.registerTool(
+    "sensitivity_placement",
+    {
+      title: "What moves this quote",
+      description: "Shock every provenanced input one at a time (default +10%) and rank the change in the all-in monthly cost of one placement under MML, ownership and long-term rental. Use it to say which assumptions a number rests on, and which evidence would change it. Reads the context, writes nothing.",
+      inputSchema: {
+        customer_id: customerId,
+        offer_id: z.string(),
+        annual_km: z.number().int().positive().optional().describe("Defaults to the requirement's distance"),
+        term_months: z.number().int().positive().optional(),
+        shock: z.number().gt(-1).optional().describe("Relative shock, default 0.1"),
+      },
+    },
+    ({ customer_id, offer_id, annual_km, term_months, shock }) =>
+      guarded(() => {
+        const result = ops.sensitivity(customer_id, offer_id, { annualKm: annual_km, termMonths: term_months, shock });
+        return {
+          offerId: result.offerId, termMonths: result.termMonths, annualKm: result.annualKm, shock: result.shock,
+          baseline: result.baseline, leading: result.leading,
+          rows: result.rows.filter((row) => row.weight > 0).map(({ path, kind, deltas }) => ({ path, kind, ...deltas })),
+          inert: result.rows.filter((row) => row.weight === 0).map((row) => row.path),
+        };
+      }),
+  );
+
+  server.registerTool(
     "list_assumptions",
     {
       title: "Provenance of every number",

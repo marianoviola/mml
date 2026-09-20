@@ -27,6 +27,7 @@ distinction the tools preserve.
 | `resolve_event` | repair | Mark an open event repaired and recorded in the asset ledger. |
 | `review_continuation` | continuation | Decide on the fleet's money: repaired value against component and material value; keep, refurbish, reassign or retire. |
 | `list_assumptions` | provenance | Every provenanced fixture value with its kind and rationale. Filter by path prefix, e.g. `finance`. |
+| `sensitivity_placement` | — | Shock every provenanced input one at a time and rank what moves one placement's monthly cost under each mode. Reads the context, writes nothing. |
 
 ## Resources and prompt
 

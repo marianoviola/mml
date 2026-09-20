@@ -4,7 +4,8 @@ import { annuityPayment, discountedCashFlow } from "./dcf.ts";
 import { assessVehicleFit, deriveMobilityRequirement } from "./mobility-class.ts";
 import { assessRepair } from "./condition.ts";
 import { assessContinuation } from "./continuation.ts";
-import { assumption } from "./provenance.ts";
+import { assumption, type ProvenancedSeries } from "./provenance.ts";
+import { oneAtATimeSensitivity, provenancedPaths } from "./sensitivity.ts";
 import type { Household, RepairEventType, Vehicle, ResidualCurves } from "./types.ts";
 import { estimateRetention } from "./retention.ts";
 
@@ -24,12 +25,14 @@ const vehicle: Vehicle = {
   },
 };
 
+const series = (values: number[]): ProvenancedSeries => ({ values, kind: "assumption", rationale: "t" });
 const curves: ResidualCurves = {
-  curves: { ice: [1, 0.7, 0.5], hev: [1, 0.8, 0.6, 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2], bev: [1, 0.7, 0.5] },
+  curves: { ice: series([1, 0.7, 0.5]), hev: series([1, 0.8, 0.6, 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2]), bev: series([1, 0.7, 0.5]) },
   referenceAnnualKm: assumption(15000, "t"), kmAdjustmentPer5000: assumption(0.02, "t"),
-  componentRetention: [0.4, 0.38, 0.36, 0.34, 0.32, 0.3, 0.28, 0.26, 0.24, 0.22],
+  componentRetention: series([0.4, 0.38, 0.36, 0.34, 0.32, 0.3, 0.28, 0.26, 0.24, 0.22]),
   materialValuePerKg: assumption(0.85, "t"),
-  conditionAdjustment: { excellent: 1.05, good: 1, fair: 0.9, poor: 0.75 },
+  materialCapitalFloorShare: assumption(0.9, "t"),
+  conditionAdjustment: { excellent: assumption(1.05, "t"), good: assumption(1, "t"), fair: assumption(0.9, "t"), poor: assumption(0.75, "t") },
 };
 
 test("DCF discounts each year and sums to NPV", () => {
@@ -121,4 +124,23 @@ test("continuation moves the customer when another placement is cheaper for the 
     assessContinuation({ vehicle, retention, pendingRepairCost: 500, horizonMonths: 36, currentMonthlyFixed: 300, alternativeMonthlyFixed: 400, reassignmentCost: 300 }).decision,
     "continue",
   );
+});
+
+test("one-at-a-time sensitivity shocks every provenanced value and series, ranks by weight and reports inert inputs", () => {
+  const inputs = { curves, price: assumption(100, "t"), _ignored: assumption(5, "t") };
+  const result = oneAtATimeSensitivity(inputs, (shocked) => ({
+    cost: shocked.price.value * shocked.curves.curves.hev.values[1],
+    floor: shocked.curves.materialCapitalFloorShare.value * 10,
+  }));
+  assert.equal(result.shock, 0.1);
+  assert.equal(result.baseline.cost, 80);
+  const byPath = Object.fromEntries(result.rows.map((row) => [row.path, row]));
+  assert.equal(byPath["price"].deltas.cost, 8);
+  assert.equal(byPath["curves.curves.hev"].deltas.cost, 8);
+  assert.equal(byPath["curves.materialCapitalFloorShare"].deltas.floor, 0.9);
+  assert.equal(byPath["curves.curves.ice"].weight, 0, "an input the outputs do not read is reported inert, not omitted");
+  assert.ok(!("_ignored" in byPath), "underscore keys are notes, not inputs");
+  assert.ok(result.rows[0].weight >= result.rows.at(-1)!.weight);
+  assert.deepEqual(provenancedPaths({ a: { b: assumption(1, "t") } }).map((target) => target.path), ["a.b"]);
+  assert.throws(() => oneAtATimeSensitivity(inputs, () => ({ x: 1 }), { shock: -1 }), RangeError);
 });

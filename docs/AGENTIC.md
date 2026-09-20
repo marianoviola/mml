@@ -46,6 +46,7 @@ edge that connects them, and any node can be an entry point.
 | continuation | `review_continuation` | 3.10 and 4.1, the Ship of Theseus, decided on the fleet's money |
 | context | `get_context`, `mml://customers/{id}` | the relationship itself |
 | provenance | `list_assumptions`, `mml://assumptions` | docs/METHODOLOGY.md |
+| what moves it | `sensitivity_placement` | not a node: every provenanced input shocked one at a time, so the Agency can say what a number rests on |
 
 The `agency` prompt is the orchestrator's brief. It tells the hosting agent to
 start from the requirement, to quote only what a tool returned, to name the
@@ -57,10 +58,11 @@ rather than claim MML is cheaper, and to record every step.
 ```bash
 npx pnpm@10.15.0 install          # Node >= 24
 npx pnpm@10.15.0 -r build
-npx pnpm@10.15.0 -r test          # 22 tests: core, fixtures, scenario, MCP round-trip, CLI
+npx pnpm@10.15.0 -r test          # 25 tests: core, fixtures, scenario, MCP round-trip, CLI
 
-node apps/cli/dist/index.js scenario four-fifty    # the journey without a language model
-node apps/cli/dist/index.js assumptions finance    # provenance of every number
+node apps/cli/dist/index.js scenario four-fifty                     # the journey without a language model
+node apps/cli/dist/index.js assumptions finance                     # provenance of every number
+node apps/cli/dist/index.js sensitivity off-corolla-fleet-6y --km 12500   # what moves the €428
 ```
 
 `.mcp.json` at the repository root registers the server for Claude Code.
@@ -92,6 +94,19 @@ the whole graph. Its findings, under the fixture assumptions:
   continues, by a margin under 10%, and the model says the next significant
   repair reopens the question. That is chapter 3.10 operating as a rule
   rather than as a sentiment.
+- What the €428 rests on, at +10% per input: the vehicle's structural life
+  (−€16), its list price, the hybrid residual curve and the condition factor
+  (+€16 each), fuel cost (+€9), the later-life consumption factor (+€11). The
+  first and last are MML's own hypotheses (chapter 2.7), not market values:
+  they cannot be sourced, only argued and published as a range. The middle
+  ones are the first quotations to find. Fourteen inputs do not move the
+  quote at all, and the bundle says which.
+- On the same third-life vehicle, MML at €509 is dearer than ownership
+  (€500) and long-term rental (€468) at 20,000 km; on the new vehicle the
+  order is rental €668, MML €672, ownership €721. The model does not claim
+  MML is cheaper; what it charges for (repair risk, continuity, the credit)
+  is in the breakdown, and the publication has to make that case, not the
+  rate.
 
 Every value is an assumption with a rationale, listed by
 `list_assumptions`; none is evidence yet. The next step for the model is the

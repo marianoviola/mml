@@ -42,14 +42,14 @@
 ## M5 · Sensitivity and stochastic simulation
 
 - [ ] Add break-even analysis.
-- [ ] Add one-variable and multi-variable sensitivity analysis.
+- [x] One-variable sensitivity analysis (`packages/core/src/sensitivity.ts`, `mml sensitivity`, `sensitivity_placement`). Multi-variable still to come.
 - [ ] Add seeded Monte Carlo simulations.
 - [ ] Publish confidence bands rather than false point precision.
 
 ## M6 · CLI and MCP
 
-- [x] CLI: `scenario four-fifty`, `assumptions`. Still to come: `simulate`, `compare`, `break-even`.
-- [x] MCP: the lifecycle graph as tools (`capture_household` … `review_continuation`), the customer context as a resource, the `agency` prompt. Scenario-level tools (`simulate_scenario`, `compare_scenarios`, `find_break_even`) follow M5.
+- [x] CLI: `scenario four-fifty`, `assumptions`, `sensitivity`. Still to come: `simulate`, `compare`, `break-even`.
+- [x] MCP: the lifecycle graph as tools (`capture_household` … `review_continuation`), `sensitivity_placement`, the customer context as a resource, the `agency` prompt. Scenario-level tools (`simulate_scenario`, `compare_scenarios`, `find_break_even`) follow the rest of M5.
 - [x] Include provenance in every machine-readable result.
 
 ## M7 · Publication bundles

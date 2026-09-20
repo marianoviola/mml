@@ -20,6 +20,7 @@ import {
 } from "@mml/core";
 import { loadFixtures, type Fixtures, type Offer } from "@mml/data";
 import type { ContextStore, CustomerContext } from "./context.ts";
+import { placementSensitivity, type PlacementSensitivity } from "./sensitivity.ts";
 
 export interface OfferQuote {
   offer: Offer;
@@ -212,6 +213,19 @@ export class LifecycleOperations {
       { offerId: offer.id, modes: comparison.modes.map((mode) => [mode.mode, mode.monthlyEquivalent.value]) },
     );
     return { quote, comparison, adjustments };
+  }
+
+  /** What moves this customer's quote for one placement: every provenanced input shocked one at a time. Not a graph node; it reads the context and writes nothing. */
+  sensitivity(customerId: string, offerId: string, options: { termMonths?: number; annualKm?: number; shock?: number } = {}): PlacementSensitivity {
+    const context = this.store.get(customerId);
+    const { household, requirement } = this.requireHousehold(context);
+    return placementSensitivity(this.fixtures, {
+      offer: this.offer(offerId),
+      household,
+      termMonths: options.termMonths ?? requirement.termMonths,
+      annualKm: options.annualKm ?? requirement.annualKm,
+      shock: options.shock,
+    });
   }
 
   contract(customerId: string, offerId: string, startedAt: string, termMonths?: number, annualKm?: number): CustomerContext {

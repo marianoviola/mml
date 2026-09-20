@@ -1,13 +1,15 @@
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
-import type {
-  FinanceProducts,
-  InsuranceTariff,
-  ProvenancedValue,
-  RepairEventType,
-  ResidualCurves,
-  Vehicle,
-  VehicleCondition,
+import {
+  isProvenancedSeries,
+  isProvenancedValue,
+  type FinanceProducts,
+  type InsuranceTariff,
+  type ProvenancedValue,
+  type RepairEventType,
+  type ResidualCurves,
+  type Vehicle,
+  type VehicleCondition,
 } from "@mml/core";
 
 export interface Offer {
@@ -75,7 +77,8 @@ export function loadFixtures(): Fixtures {
 
 export interface AssumptionRecord {
   path: string;
-  value: number;
+  /** A single value, or the points of a curve that carries one status. */
+  value: number | number[];
   kind: ProvenancedValue["kind"];
   source?: string;
   rationale?: string;
@@ -87,9 +90,12 @@ export function listAssumptions(): AssumptionRecord[] {
   const records: AssumptionRecord[] = [];
   const walk = (value: unknown, path: string) => {
     if (value && typeof value === "object") {
-      const candidate = value as Partial<ProvenancedValue>;
-      if (typeof candidate.value === "number" && typeof candidate.kind === "string") {
-        records.push({ path, value: candidate.value, kind: candidate.kind, source: candidate.source, rationale: candidate.rationale });
+      if (isProvenancedValue(value)) {
+        records.push({ path, value: value.value, kind: value.kind, source: value.source, rationale: value.rationale });
+        return;
+      }
+      if (isProvenancedSeries(value)) {
+        records.push({ path, value: value.values, kind: value.kind, source: value.source, rationale: value.rationale });
         return;
       }
       for (const [key, child] of Object.entries(value)) {

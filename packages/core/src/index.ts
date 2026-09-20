@@ -7,3 +7,4 @@ export * from "./mobility-rate.ts";
 export * from "./acquisition.ts";
 export * from "./condition.ts";
 export * from "./continuation.ts";
+export * from "./sensitivity.ts";

@@ -54,7 +54,7 @@ export function compareAcquisitionModes(args: {
   const endAge = placement.ageYears + years;
   const endKm = placement.odometerKm + annualKm * years;
   const energy = energyPerMonth(vehicle, household, annualKm);
-  const maintenanceRetail = maintenancePerYear(vehicle, placement.ageYears + years / 2, annualKm, finance.retailMaintenanceUplift.value) / 12;
+  const maintenanceRetail = maintenancePerYear(vehicle, placement.ageYears + years / 2, annualKm, finance, finance.retailMaintenanceUplift.value) / 12;
 
   // Ownership: buy at the offer price, finance a share, sell at the end at the market curve.
   const residual = estimateRetention(vehicle, curves, endAge, endKm, "good").mobilityValue.value;
@@ -71,7 +71,7 @@ export function compareAcquisitionModes(args: {
   const nltCapital = (purchasePrice * (1 - finance.fleetDiscount.value) - residual) / termMonths;
   const nltFinance = (((purchasePrice * (1 - finance.fleetDiscount.value) + residual) / 2) * finance.nltCostOfCapital.value) / 12;
   const nltInsurance = insurancePremiumPerYear(vehicle, household, insurance, true) / 12;
-  const nltServices = maintenancePerYear(vehicle, placement.ageYears + years / 2, annualKm) / 12 + finance.operationsMonthly.value;
+  const nltServices = maintenancePerYear(vehicle, placement.ageYears + years / 2, annualKm, finance) / 12 + finance.operationsMonthly.value;
   const nltSubtotal = nltCapital + nltFinance + nltInsurance + nltServices;
   const nltFixed = nltSubtotal * (1 + finance.nltMarginShare.value);
 

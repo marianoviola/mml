@@ -1,13 +1,19 @@
 {
   "_note": "Fraction of list price retained by age (index = years). Market-style curves used conservatively as the vehicle's value as mobility; MML fleet-internal value may be higher because normal use is priced in.",
   "curves": {
-    "ice": [1.0, 0.76, 0.66, 0.58, 0.51, 0.45, 0.40, 0.35, 0.31, 0.27, 0.24, 0.21, 0.19, 0.17, 0.15, 0.13],
-    "hev": [1.0, 0.78, 0.68, 0.60, 0.53, 0.47, 0.42, 0.37, 0.33, 0.29, 0.26, 0.23, 0.20, 0.18, 0.16, 0.14],
-    "bev": [1.0, 0.70, 0.58, 0.49, 0.42, 0.36, 0.31, 0.27, 0.24, 0.21, 0.19, 0.17, 0.15, 0.13, 0.12, 0.10]
+    "ice": { "values": [1.0, 0.76, 0.66, 0.58, 0.51, 0.45, 0.40, 0.35, 0.31, 0.27, 0.24, 0.21, 0.19, 0.17, 0.15, 0.13], "kind": "assumption", "rationale": "European C-segment petrol residual band, 0–15 years; to be replaced by a used-market curve" },
+    "hev": { "values": [1.0, 0.78, 0.68, 0.60, 0.53, 0.47, 0.42, 0.37, 0.33, 0.29, 0.26, 0.23, 0.20, 0.18, 0.16, 0.14], "kind": "assumption", "rationale": "full-hybrid band, slightly stronger than petrol on the used market; to be replaced by a used-market curve" },
+    "bev": { "values": [1.0, 0.70, 0.58, 0.49, 0.42, 0.36, 0.31, 0.27, 0.24, 0.21, 0.19, 0.17, 0.15, 0.13, 0.12, 0.10], "kind": "assumption", "rationale": "BEV band, steeper first years reflecting 2024–2026 used-market pricing; to be replaced by a used-market curve" }
   },
   "referenceAnnualKm": { "value": 15000, "kind": "assumption", "rationale": "distance the curves assume" },
   "kmAdjustmentPer5000": { "value": 0.02, "kind": "assumption", "rationale": "2% per 5,000 km above or below reference" },
-  "componentRetention": [0.40, 0.38, 0.36, 0.34, 0.32, 0.30, 0.28, 0.26, 0.24, 0.22, 0.20, 0.18, 0.16, 0.14, 0.12, 0.10],
+  "componentRetention": { "values": [0.40, 0.38, 0.36, 0.34, 0.32, 0.30, 0.28, 0.26, 0.24, 0.22, 0.20, 0.18, 0.16, 0.14, 0.12, 0.10], "kind": "assumption", "rationale": "share of list price recoverable as components by age; chapter 4 hierarchy, no market series exists" },
   "materialValuePerKg": { "value": 0.85, "kind": "assumption", "rationale": "net of dismantling and processing, steel/aluminium/copper mix" },
-  "conditionAdjustment": { "excellent": 1.05, "good": 1.0, "fair": 0.9, "poor": 0.75 }
+  "materialCapitalFloorShare": { "value": 0.9, "kind": "assumption", "rationale": "chapter 2.5 leaves the method open; 90% of material retention value is one method, labelled" },
+  "conditionAdjustment": {
+    "excellent": { "value": 1.05, "kind": "assumption", "rationale": "condition premium over the curve" },
+    "good": { "value": 1.0, "kind": "assumption", "rationale": "the curve's own condition" },
+    "fair": { "value": 0.9, "kind": "assumption", "rationale": "condition discount" },
+    "poor": { "value": 0.75, "kind": "assumption", "rationale": "condition discount, unrepaired events" }
+  }
 }

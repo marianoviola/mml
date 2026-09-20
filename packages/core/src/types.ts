@@ -1,4 +1,4 @@
-import type { ProvenancedValue } from "./provenance.ts";
+import type { ProvenancedSeries, ProvenancedValue } from "./provenance.ts";
 
 export type Powertrain = "ice" | "mhev" | "hev" | "phev" | "bev";
 
@@ -78,6 +78,11 @@ export interface FinanceProducts {
   ownershipTaxMonthly: ProvenancedValue;
   retailMaintenanceUplift: ProvenancedValue;
   ownershipRepairProvisionShare: ProvenancedValue;
+  /** Scheduled maintenance scaling: cost grows with age, scales sub-linearly with distance, tyres are per km. */
+  maintenanceAgeFactorPerYear: ProvenancedValue;
+  maintenanceReferenceAnnualKm: ProvenancedValue;
+  maintenanceKmExponent: ProvenancedValue;
+  tyresPerKm: ProvenancedValue;
   reassignmentCost: ProvenancedValue;
 }
 
@@ -90,14 +95,16 @@ export interface InsuranceTariff {
 
 export interface ResidualCurves {
   /** Fraction of list price retained at each integer age, index = years. */
-  curves: Record<"ice" | "hev" | "bev", number[]>;
+  curves: Record<"ice" | "hev" | "bev", ProvenancedSeries>;
   referenceAnnualKm: ProvenancedValue;
   kmAdjustmentPer5000: ProvenancedValue;
   /** Component Retention Value as a fraction of list price by age. */
-  componentRetention: number[];
+  componentRetention: ProvenancedSeries;
   /** Net recoverable material value per kg after processing. */
   materialValuePerKg: ProvenancedValue;
-  conditionAdjustment: Record<VehicleCondition, number>;
+  /** Chapter 2.5: the share of material retention value held as the Material Capital Credit floor. */
+  materialCapitalFloorShare: ProvenancedValue;
+  conditionAdjustment: Record<VehicleCondition, ProvenancedValue>;
 }
 
 export type VehicleCondition = "excellent" | "good" | "fair" | "poor";
