@@ -1,0 +1,13 @@
+{
+  "id": "optimistic",
+  "description": "The hypotheses moved in MML's favour, within what the chapters argue rather than beyond it: a vehicle designed to last, slow later-life consumption, infrastructure-grade capital, fuel back at its 2025 level.",
+  "overrides": {
+    "vehicles.toyota-corolla-ts-hybrid.lifecycle.structuralLifeYears": { "value": 18, "rationale": "optimistic: an mml-adapted model line with scheduled refurbishment reaching the life chapter 3 argues for" },
+    "finance.firstLifeConsumptionFactor": { "value": 1.1, "rationale": "optimistic: first-life consumption close to the average" },
+    "finance.laterLifeConsumptionFactor": { "value": 0.8, "rationale": "optimistic: later lives consume the asset markedly more slowly" },
+    "finance.fleetCostOfCapital": { "value": 0.04, "rationale": "optimistic: asset-company funding at infrastructure cost" },
+    "energy.petrolPerLitre": { "value": 1.85, "rationale": "optimistic: petrol back at the 2025 national average" },
+    "energy.realUseUplift": { "value": 1.05, "rationale": "optimistic: real-use gap at the bottom of the range for full hybrids" },
+    "insurance.fleetDiscount": { "value": 0.25, "rationale": "optimistic: a lifecycle fleet with repair-before-replacement earns a deeper pooling discount" }
+  }
+}

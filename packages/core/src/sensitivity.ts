@@ -89,3 +89,12 @@ export function provenancedPaths(root: unknown): Target[] {
   walk(root, "");
   return targets;
 }
+
+/** A deep copy of `root` with the provenanced value at `path` set to `value`; the original is untouched. */
+export function withProvenancedValue<T>(root: T, path: string, value: number): T {
+  const copy = structuredClone(root);
+  const holder = path.split(".").reduce<unknown>((node, key) => (node as Record<string, unknown> | undefined)?.[key], copy);
+  if (!isProvenancedValue(holder)) throw new Error(`no provenanced value at ${path}`);
+  holder.value = value;
+  return copy;
+}

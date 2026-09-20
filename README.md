@@ -12,9 +12,10 @@ packages/data            fixtures with provenance (vehicles, placements, finance
 packages/lifecycle       lifecycle graph operations and the persistent customer context
 apps/cli                 command-line interface for reproducible runs
 apps/mcp                 MCP adapter over the lifecycle operations, with the Agency prompt
-scenarios                canonical MML-H / MML-E and customer scenarios
+scenarios                reference vehicles and the assumption sets (central, adverse, optimistic)
+bundles                  canonical result bundles per model version, reproduced by CI
 state                    customer contexts written by the MCP server (gitignored)
-outputs                  generated result bundles (gitignored)
+outputs                  scratch results (gitignored)
 docs                     methodology and architecture
 ```
 
@@ -40,9 +41,12 @@ See `docs/AGENTIC.md` for the agentic layer and how to run it.
 7. Generate immutable result bundles for the MML publication.
 8. Build an Agency experience prototype only after the model is credible.
 
-Status: **first stone**. The deterministic core, the fixture layer, the lifecycle
-operations and the MCP server exist and are tested; the €450 scenario runs end to
-end from the CLI. Every numeric input is still an assumption.
+Status: **model 0.2.0**. The deterministic core, the fixture layer, the lifecycle
+operations, sensitivity, break-even and the MCP server exist and are tested; the
+€450 scenario runs end to end under three assumption sets and its bundles are
+committed under `bundles/0.2.0/`. The vehicle the scenario rests on is documented
+from published sources; the other six remain assumptions with a rationale. What the
+run says is in `docs/AGENTIC.md`.
 
 ## Licence
 

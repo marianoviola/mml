@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import type { Household } from "@mml/core";
+import { applyAssumptionSet, loadAssumptionSet, loadFixtures } from "@mml/data";
 import { ContextStore } from "./context.ts";
 import { LifecycleOperations } from "./operations.ts";
 
@@ -14,6 +15,8 @@ export interface ScenarioBundle {
   modelVersion: string;
   generatedAt: string;
   fixtureHashes: Record<string, string>;
+  /** Which assumption set produced this bundle, and the hash of its overrides. */
+  assumptionSet: { id: string; hash: string };
   household: Household;
   steps: ScenarioStep[];
   outputHash: string;
@@ -41,12 +44,15 @@ export function runFourFiftyScenario(options: {
   stateDir: string;
   customerId?: string;
   modelVersion: string;
+  /** Assumption set id under scenarios/sets; `central` when omitted. */
+  assumptionSet?: string;
   now?: () => Date;
 }): ScenarioBundle {
   const now = options.now ?? (() => new Date("2026-09-15T09:00:00Z"));
   const customerId = options.customerId ?? "four-fifty";
+  const fixtures = applyAssumptionSet(loadFixtures(), loadAssumptionSet(options.assumptionSet ?? "central"));
   const store = new ContextStore(options.stateDir, now);
-  const ops = new LifecycleOperations(store);
+  const ops = new LifecycleOperations(store, fixtures);
   const steps: ScenarioStep[] = [];
 
   // 1. Discovery → requirement. The household states the outcome it needs and the budget it declares before quotation.
@@ -89,9 +95,10 @@ export function runFourFiftyScenario(options: {
   if (!cheapestTouring) throw new Error("scenario invariant broken: no family-touring placement exists in the fixtures");
   const chosenQuote = ops.quote(customerId, cheapestTouring.offer.id);
   const distanceAdjustment = chosenQuote.adjustments.find((adjustment) => adjustment.kind === "distance");
-  const contractKm = chosenQuote.quote.withinBudget
-    ? FOUR_FIFTY_HOUSEHOLD.annualKm
-    : distanceAdjustment?.kind === "distance" ? distanceAdjustment.annualKm : FOUR_FIFTY_HOUSEHOLD.annualKm;
+  const budgetAdjustment = chosenQuote.adjustments.find((adjustment) => adjustment.kind === "budget");
+  // What gives: the distance if a lower one fits the budget; otherwise the budget itself, at the declared distance.
+  const contractKm = distanceAdjustment?.kind === "distance" ? distanceAdjustment.annualKm : FOUR_FIFTY_HOUSEHOLD.annualKm;
+  const gave: "nothing" | "distance" | "budget" = chosenQuote.quote.withinBudget ? "nothing" : distanceAdjustment ? "distance" : "budget";
   const chosen = cheapestTouring;
   steps.push({
     node: "comparison",
@@ -100,12 +107,14 @@ export function runFourFiftyScenario(options: {
       allInAtDeclaredDistance: chosenQuote.quote.rate.allInMonthly.value,
       withinBudget: chosenQuote.quote.withinBudget,
       adjustments: chosenQuote.adjustments,
+      gave,
       contractedAnnualKm: contractKm,
+      contractedBudget: gave === "budget" && budgetAdjustment?.kind === "budget" ? budgetAdjustment.requiredBudget : FOUR_FIFTY_HOUSEHOLD.monthlyBudget,
       rate: chosenQuote.quote.rate,
     },
   });
 
-  // 5. Contract, then ownership: 18 months pass.
+  // 5. Contract on what gave, then ownership: 18 months pass.
   ops.contract(customerId, chosen.offer.id, now().toISOString().slice(0, 10), undefined, contractKm);
   const afterEighteen = ops.advance(customerId, 18);
   steps.push({ node: "ownership", title: "Eighteen months in service", output: { vehicle: afterEighteen.vehicle, contract: afterEighteen.contract } });
@@ -148,15 +157,25 @@ export function runFourFiftyScenario(options: {
     },
   });
 
+  // 9. Break-even: what would have to be true for the answer to be different, on the contracted placement and on the new vehicle.
+  for (const [offerId, label] of [[chosen.offer.id, `${chosen.vehicle.model} ${chosen.offer.condition}`], ["off-corolla-new-mi", "Corolla Touring Sports new"]] as const) {
+    const breakEvens = ops.breakEvens(customerId, offerId, { annualKm: contractKm });
+    steps.push({
+      node: "break-even",
+      title: `What would have to be true: ${label} at ${contractKm} km/yr`,
+      output: { central: breakEvens.central, rows: breakEvens.rows },
+    });
+  }
+
   const context = ops.context(customerId);
   steps.push({ node: "context", title: "Customer context after the journey", output: context.timeline.map((entry) => `${entry.node}: ${entry.summary}`) });
 
-  const body = { household: FOUR_FIFTY_HOUSEHOLD, steps };
+  const body = { assumptionSet: fixtures.assumptionSet, household: FOUR_FIFTY_HOUSEHOLD, steps };
   return {
     scenario: "four-fifty",
     modelVersion: options.modelVersion,
     generatedAt: now().toISOString(),
-    fixtureHashes: ops.fixtures.hashes,
+    fixtureHashes: fixtures.hashes,
     ...body,
     outputHash: createHash("sha256").update(JSON.stringify(body)).digest("hex").slice(0, 16),
   };

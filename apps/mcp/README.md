@@ -28,6 +28,7 @@ distinction the tools preserve.
 | `review_continuation` | continuation | Decide on the fleet's money: repaired value against component and material value; keep, refurbish, reassign or retire. |
 | `list_assumptions` | provenance | Every provenanced fixture value with its kind and rationale. Filter by path prefix, e.g. `finance`. |
 | `sensitivity_placement` | — | Shock every provenanced input one at a time and rank what moves one placement's monthly cost under each mode. Reads the context, writes nothing. |
+| `break_even_placement` | — | The distance at which MML meets the budget, and the structural life, cost of capital and consumption factor at which it costs what rental costs; "none" when nothing in range does. Reads the context, writes nothing. |
 
 ## Resources and prompt
 
@@ -56,6 +57,6 @@ continuation review before a contract).
 ## Boundaries
 
 Fixtures stand in for dealer inventory, finance, insurance and repair pricing;
-no external API is called. Scenario-level tools (`simulate_scenario`,
-`compare_scenarios`, `find_break_even`) are planned for after sensitivity
-analysis lands in `@mml/core` (roadmap M5).
+no external API is called. The server runs on the central assumption set;
+the adverse and optimistic sets are available through the CLI and the
+canonical bundles. `simulate_scenario` follows Monte Carlo (roadmap M5).

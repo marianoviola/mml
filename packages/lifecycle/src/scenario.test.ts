@@ -40,13 +40,23 @@ test("the model is honest about the €450 gap and finds what has to give", () =
     assert.ok(shortlist.eligible[0].allIn < shortlist.eligible[shortlist.eligible.length - 1].allIn);
 
     const answer = bundle.steps.find((step) => step.title.startsWith("The €450 answer"))!.output as {
-      withinBudget: boolean; adjustments: Array<{ kind: string; allIn?: number }>; contractedAnnualKm: number;
+      withinBudget: boolean; adjustments: Array<{ kind: string; allIn?: number; requiredBudget?: number; annualKm?: number }>;
+      gave: string; contractedAnnualKm: number; contractedBudget: number; allInAtDeclaredDistance: number;
     };
     if (!answer.withinBudget) {
       assert.ok(answer.adjustments.length > 0, "an over-budget answer must say what has to change");
+      assert.ok(!answer.adjustments.some((adjustment) => adjustment.kind === "none"), "'nothing can be done' is not an answer the model gives");
       const distance = answer.adjustments.find((adjustment) => adjustment.kind === "distance");
-      assert.ok(distance && distance.allIn! <= 450);
-      assert.ok(answer.contractedAnnualKm < 20000);
+      const budget = answer.adjustments.find((adjustment) => adjustment.kind === "budget");
+      if (distance) {
+        assert.equal(answer.gave, "distance");
+        assert.ok(distance.allIn! <= 450 && answer.contractedAnnualKm < 20000);
+      } else {
+        assert.equal(answer.gave, "budget");
+        assert.ok(budget && budget.requiredBudget! > 450, "when no distance fits, the model names the budget that would");
+        assert.equal(answer.contractedAnnualKm, 20000);
+        assert.equal(answer.contractedBudget, answer.allInAtDeclaredDistance);
+      }
     }
   } finally {
     rmSync(dir, { recursive: true, force: true });
@@ -122,5 +132,27 @@ test("the bundle says what its answer rests on: the sensitivity step ranks input
     assert.ok(structural.mml < 0 && structural.ownership === 0, "structural life is MML's own lever; ownership does not see it");
   } finally {
     rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("the scenario runs under each assumption set, records which one, and the sets order the answer as they should", () => {
+  const dirs = [fresh(), fresh(), fresh()];
+  try {
+    const [adverse, central, optimistic] = (["adverse", "central", "optimistic"] as const).map((assumptionSet, index) =>
+      runFourFiftyScenario({ stateDir: dirs[index], modelVersion: "test", assumptionSet }),
+    );
+    assert.equal(central.assumptionSet.id, "central");
+    assert.notEqual(adverse.outputHash, central.outputHash);
+    const answerOf = (bundle: typeof central) => (bundle.steps.find((step) => step.title.startsWith("The €450 answer"))!.output as { allInAtDeclaredDistance: number }).allInAtDeclaredDistance;
+    assert.ok(answerOf(adverse) > answerOf(central) && answerOf(central) > answerOf(optimistic), "adverse dearer than central, central dearer than optimistic");
+    const breakEvens = central.steps.filter((step) => step.node === "break-even");
+    assert.equal(breakEvens.length, 2, "break-even on the contracted placement and on the new vehicle");
+    for (const step of breakEvens) {
+      const rows = (step.output as { rows: Array<{ input: string; value?: number; note: string }> }).rows;
+      assert.deepEqual(rows.map((row) => row.input.split(".").at(-1)), ["annualKm", "structuralLifeYears", "fleetCostOfCapital", step.title.includes("new") ? "firstLifeConsumptionFactor" : "laterLifeConsumptionFactor"]);
+      for (const row of rows) assert.ok(row.note.length > 0);
+    }
+  } finally {
+    for (const dir of dirs) rmSync(dir, { recursive: true, force: true });
   }
 });

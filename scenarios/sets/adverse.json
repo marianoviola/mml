@@ -1,0 +1,14 @@
+{
+  "id": "adverse",
+  "description": "Every hypothesis MML's own economics rest on, moved against it at once: shorter structural life, faster consumption in every life, dearer fleet capital, dearer fuel and cover, more real-use consumption. What the publication must survive.",
+  "overrides": {
+    "vehicles.toyota-corolla-ts-hybrid.lifecycle.structuralLifeYears": { "value": 12, "rationale": "adverse: structural life at the low end of what a full hybrid estate is expected to reach in Italian use" },
+    "finance.firstLifeConsumptionFactor": { "value": 1.3, "rationale": "adverse: a new vehicle consumes mobility value faster than the central hypothesis" },
+    "finance.laterLifeConsumptionFactor": { "value": 1.0, "rationale": "adverse: later lives consume the asset no more slowly than the first" },
+    "finance.fleetCostOfCapital": { "value": 0.07, "rationale": "adverse: asset-company funding at lessor rather than infrastructure cost" },
+    "finance.warrantyPoolShare": { "value": 0.006, "rationale": "adverse: unplanned repair provision half again the central figure" },
+    "energy.petrolPerLitre": { "value": 2.3, "rationale": "adverse: petrol 10% above the September 2026 national average" },
+    "energy.realUseUplift": { "value": 1.15, "rationale": "adverse: real-use gap at the top of the ICCT range for full hybrids" },
+    "insurance.comprehensiveShareOfValue": { "value": 0.035, "rationale": "adverse: comprehensive cover priced for a metropolitan theft area" }
+  }
+}

@@ -2,6 +2,7 @@ import {
   compareAcquisitionModes,
   deriveMobilityRequirement,
   oneAtATimeSensitivity,
+  type EnergyPrices,
   type FinanceProducts,
   type Household,
   type InsuranceTariff,
@@ -31,12 +32,13 @@ interface SensitivityInputs {
   finance: FinanceProducts;
   insurance: InsuranceTariff;
   curves: ResidualCurves;
+  energy: EnergyPrices;
 }
 
 /**
  * Which inputs move the all-in monthly cost of one placement, under each
  * acquisition mode. The inputs shocked are the vehicle's own values and the
- * finance, insurance and residual-curve fixtures: everything the quote
+ * finance, insurance, energy-price and residual-curve fixtures: everything the quote
  * reads that carries a provenance status. Offer prices are not shocked; an
  * offer is a quotation by nature and is replaced, not calibrated.
  */
@@ -51,7 +53,7 @@ export function placementSensitivity(
   const termMonths = args.termMonths ?? requirement.termMonths;
   const annualKm = args.annualKm ?? household.annualKm;
 
-  const inputs: SensitivityInputs = { vehicle, finance: fixtures.finance, insurance: fixtures.insurance, curves: fixtures.curves };
+  const inputs: SensitivityInputs = { vehicle, finance: fixtures.finance, insurance: fixtures.insurance, curves: fixtures.curves, energy: fixtures.energy };
   const evaluate = (shocked: SensitivityInputs): PlacementSensitivityOutputs => {
     const comparison = compareAcquisitionModes({
       vehicle: shocked.vehicle,
@@ -62,6 +64,7 @@ export function placementSensitivity(
       finance: shocked.finance,
       insurance: shocked.insurance,
       curves: shocked.curves,
+      energy: shocked.energy,
       placement: { ageYears: offer.ageYears, odometerKm: offer.odometerKm, condition: offer.vehicleCondition },
     });
     const monthly = (mode: string) => comparison.modes.find((candidate) => candidate.mode === mode)!.monthlyEquivalent.value;

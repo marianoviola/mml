@@ -1,6 +1,6 @@
 {
   "_note": "Pricing assumptions for the three acquisition modes. None is a quotation; each is a scenario parameter to be replaced by evidence.",
-  "loanApr": { "value": 0.07, "kind": "assumption", "rationale": "retail car loan APR band, 2026" },
+  "loanApr": { "value": 0.0919, "kind": "evidence", "source": "Toyota Financial Services, offerta Corolla Touring Sports su toyota.it, TAEG 9,19% (TAN 7,75%), 47 rate, contratti entro il 30/09/2026; the all-in TAEG is used as the retail cost of credit" },
   "loanFinancedShare": { "value": 0.8, "kind": "assumption", "rationale": "20% deposit" },
   "nltMarginShare": { "value": 0.08, "kind": "assumption", "rationale": "long-term rental margin band" },
   "nltCostOfCapital": { "value": 0.06, "kind": "assumption", "rationale": "lessor funding cost band" },

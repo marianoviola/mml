@@ -27,10 +27,10 @@
 
 ## M3 · Reference vehicles
 
-- [ ] Complete MML-H assumptions and evidence.
+- [ ] Complete MML-H assumptions and evidence. Done for the Corolla Touring Sports (list price, WLTP consumption, maintenance tariff, kerb mass, used-market residual curve to year 7) and the shared prices (petrol, home electricity, RC premium, retail credit). Six vehicles remain assumptions.
 - [ ] Complete MML-E assumptions and evidence.
-- [ ] Add central, optimistic and adverse scenario sets.
-- [ ] Produce ownership / leasing-NLT / MML comparisons.
+- [x] Add central, optimistic and adverse scenario sets (`scenarios/sets/`).
+- [x] Produce ownership / leasing-NLT / MML comparisons (in every bundle, `modes.csv`).
 
 ## M4 · Agency and capital
 
@@ -41,22 +41,22 @@
 
 ## M5 · Sensitivity and stochastic simulation
 
-- [ ] Add break-even analysis.
+- [x] Break-even analysis (`packages/core/src/break-even.ts`, `mml break-even`, `break_even_placement`): distance for the budget; structural life, cost of capital and consumption factor against long-term rental.
 - [x] One-variable sensitivity analysis (`packages/core/src/sensitivity.ts`, `mml sensitivity`, `sensitivity_placement`). Multi-variable still to come.
 - [ ] Add seeded Monte Carlo simulations.
 - [ ] Publish confidence bands rather than false point precision.
 
 ## M6 · CLI and MCP
 
-- [x] CLI: `scenario four-fifty`, `assumptions`, `sensitivity`. Still to come: `simulate`, `compare`, `break-even`.
-- [x] MCP: the lifecycle graph as tools (`capture_household` … `review_continuation`), `sensitivity_placement`, the customer context as a resource, the `agency` prompt. Scenario-level tools (`simulate_scenario`, `compare_scenarios`, `find_break_even`) follow the rest of M5.
+- [x] CLI: `scenario four-fifty --set`, `bundles`, `assumptions`, `sensitivity`, `break-even`. Still to come: `simulate` (M5 Monte Carlo).
+- [x] MCP: the lifecycle graph as tools (`capture_household` … `review_continuation`), `sensitivity_placement`, `break_even_placement`, the customer context as a resource, the `agency` prompt. `simulate_scenario` follows Monte Carlo.
 - [x] Include provenance in every machine-readable result.
 
 ## M7 · Publication bundles
 
-- [ ] Generate immutable canonical result bundles.
-- [ ] Record model version, commit and scenario hashes.
-- [ ] Export JSON/CSV and figure-ready datasets.
+- [x] Generate immutable canonical result bundles (`bundles/0.2.0/`, one per assumption set; CI reproduces them).
+- [x] Record model version, commit, assumption-set and fixture hashes (`index.json`).
+- [x] Export JSON/CSV and figure-ready datasets (`modes.csv`, `sensitivity.csv`, `break-even.csv`).
 - [ ] Integrate bundles with MML Publication 0.3.0 without running simulations during site builds.
 
 ## M8 · Agency prototype

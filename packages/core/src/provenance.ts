@@ -18,6 +18,8 @@ export interface ProvenancedSeries {
   kind: EvidenceKind;
   source?: string;
   rationale?: string;
+  /** When only the first points are observed: the last index grounded in the source; the rest is extrapolation. */
+  evidenceThroughIndex?: number;
 }
 
 export const isProvenancedValue = (candidate: unknown): candidate is ProvenancedValue =>

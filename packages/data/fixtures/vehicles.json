@@ -1,17 +1,13 @@
 {
-  "_note": "Scale references for modelling. List prices, energy and maintenance figures are assumptions calibrated to the 2026 European market and must be replaced by quotations before any published figure. Vehicles are the chapter 2 table references plus the chapter 3 pilot candidate.",
+  "_note": "Scale references for modelling, except where a value is marked evidence with its source. Energy is expressed as WLTP consumption per 100 km; the unit price and the real-use uplift are in energy.json. The Corolla Touring Sports, which the €450 scenario rests on, is documented from Toyota Motor Italia's MY26 price list; the other vehicles remain assumptions calibrated to the 2026 European market.",
   "vehicles": [
     {
       "id": "dacia-spring",
       "make": "Dacia", "model": "Spring",
       "mobilityClass": "urban-compact", "powertrain": "bev", "seats": 4, "luggageLitres": 308,
       "listPrice": { "value": 17900, "kind": "assumption", "rationale": "scale reference, 2026 list price band" },
-      "energyCostPerKm": {
-        "home": { "value": 0.035, "kind": "assumption", "rationale": "14 kWh/100 km at €0.25/kWh home tariff" },
-        "public": { "value": 0.075, "kind": "assumption", "rationale": "14 kWh/100 km at €0.55/kWh public AC/DC mix" }
-      },
+      "consumption": { "per100km": { "value": 14, "kind": "assumption", "rationale": "WLTP band, 26.8 kWh battery city car" }, "unit": "kWh" },
       "maintenancePerYear": { "value": 300, "kind": "assumption", "rationale": "BEV service schedule, no oil, brake wear reduced" },
-      "insuranceGroup": 10,
       "kerbMassKg": { "value": 980, "kind": "assumption", "rationale": "manufacturer figure band" },
       "residualCurve": "bev",
       "lifecycle": {
@@ -29,12 +25,8 @@
       "make": "Renault", "model": "Clio E-Tech full hybrid",
       "mobilityClass": "compact-mixed", "powertrain": "hev", "seats": 5, "luggageLitres": 301,
       "listPrice": { "value": 24500, "kind": "assumption", "rationale": "scale reference, 2026 list price band" },
-      "energyCostPerKm": {
-        "home": { "value": 0.078, "kind": "assumption", "rationale": "4.2 l/100 km at €1.85/l" },
-        "public": { "value": 0.078, "kind": "assumption", "rationale": "forecourt fuel, charging irrelevant" }
-      },
+      "consumption": { "per100km": { "value": 4.2, "kind": "assumption", "rationale": "WLTP band, E-Tech full hybrid" }, "unit": "l" },
       "maintenancePerYear": { "value": 420, "kind": "assumption", "rationale": "hybrid service schedule" },
-      "insuranceGroup": 14,
       "kerbMassKg": { "value": 1300, "kind": "assumption", "rationale": "manufacturer figure band" },
       "residualCurve": "hev",
       "lifecycle": {
@@ -51,14 +43,10 @@
       "id": "toyota-corolla-ts-hybrid",
       "make": "Toyota", "model": "Corolla Touring Sports Hybrid",
       "mobilityClass": "family-touring", "powertrain": "hev", "seats": 5, "luggageLitres": 596,
-      "listPrice": { "value": 33500, "kind": "assumption", "rationale": "scale reference, 2026 list price band" },
-      "energyCostPerKm": {
-        "home": { "value": 0.083, "kind": "assumption", "rationale": "4.5 l/100 km at €1.85/l" },
-        "public": { "value": 0.083, "kind": "assumption", "rationale": "forecourt fuel, charging irrelevant" }
-      },
-      "maintenancePerYear": { "value": 450, "kind": "assumption", "rationale": "hybrid service schedule" },
-      "insuranceGroup": 18,
-      "kerbMassKg": { "value": 1420, "kind": "assumption", "rationale": "manufacturer figure band" },
+      "listPrice": { "value": 35500, "kind": "evidence", "source": "Toyota Motor Italia, Corolla Touring Sports 1.8 Hybrid Active MY26, prezzo di listino IVA inclusa, listino n. 1/25 in vigore dal 20/11/2025; confermato su toyota.it/promozione/corolla-touring-sports il 20/09/2026" },
+      "consumption": { "per100km": { "value": 4.5, "kind": "evidence", "source": "Toyota Motor Italia, Corolla Touring Sports MY26 Listino & Specifiche n. 1/25 del 20/11/2025, allegato consumi WLTP combinato, Active 1.8 (https://www.toyota.it/content/dam/toyota/nmsc/italy/gamma/pdf/listino-e-specifiche/Corolla-TS-Listino-e-Specifiche.pdf)" }, "unit": "l" },
+      "maintenancePerYear": { "value": 403, "kind": "evidence", "source": "Toyota Motor Italia, Pacchetti manutenzione veicoli nuovi, listino valido dall'08/01/2026: Corolla 1.8 Hybrid 6 tagliandi / 90.000 km €2.420,00, diviso sei; tyres excluded (https://www.toyota.it/content/dam/toyota/nmsc/italy/clienti/manutenzione/Programma-manutenzione-Toyota.pdf)" },
+      "kerbMassKg": { "value": 1400, "kind": "evidence", "source": "Toyota Motor Italia, Corolla Touring Sports MY26 Listino & Specifiche, massa a vuoto, 1.8 Hybrid Active" },
       "residualCurve": "hev",
       "lifecycle": {
         "stage": "mml-compatible",
@@ -75,12 +63,8 @@
       "make": "Škoda", "model": "Octavia Combi 1.5 TSI",
       "mobilityClass": "family-touring", "powertrain": "ice", "seats": 5, "luggageLitres": 640,
       "listPrice": { "value": 31000, "kind": "assumption", "rationale": "scale reference, 2026 list price band" },
-      "energyCostPerKm": {
-        "home": { "value": 0.111, "kind": "assumption", "rationale": "6.0 l/100 km at €1.85/l" },
-        "public": { "value": 0.111, "kind": "assumption", "rationale": "forecourt fuel" }
-      },
+      "consumption": { "per100km": { "value": 6.0, "kind": "assumption", "rationale": "WLTP band, 1.5 TSI mild-hybrid estate" }, "unit": "l" },
       "maintenancePerYear": { "value": 520, "kind": "assumption", "rationale": "petrol service schedule" },
-      "insuranceGroup": 17,
       "kerbMassKg": { "value": 1350, "kind": "assumption", "rationale": "manufacturer figure band" },
       "residualCurve": "ice",
       "lifecycle": {
@@ -98,12 +82,8 @@
       "make": "Škoda", "model": "Enyaq",
       "mobilityClass": "family-electric", "powertrain": "bev", "seats": 5, "luggageLitres": 585,
       "listPrice": { "value": 44000, "kind": "assumption", "rationale": "scale reference, 2026 list price band" },
-      "energyCostPerKm": {
-        "home": { "value": 0.045, "kind": "assumption", "rationale": "18 kWh/100 km at €0.25/kWh" },
-        "public": { "value": 0.099, "kind": "assumption", "rationale": "18 kWh/100 km at €0.55/kWh" }
-      },
+      "consumption": { "per100km": { "value": 18, "kind": "assumption", "rationale": "WLTP band, 77 kWh family SUV" }, "unit": "kWh" },
       "maintenancePerYear": { "value": 380, "kind": "assumption", "rationale": "BEV service schedule" },
-      "insuranceGroup": 22,
       "kerbMassKg": { "value": 2000, "kind": "assumption", "rationale": "manufacturer figure band" },
       "residualCurve": "bev",
       "lifecycle": {
@@ -121,12 +101,8 @@
       "make": "Volkswagen", "model": "ID. Buzz seven-seat",
       "mobilityClass": "large-family", "powertrain": "bev", "seats": 7, "luggageLitres": 1121,
       "listPrice": { "value": 62000, "kind": "assumption", "rationale": "scale reference, 2026 list price band" },
-      "energyCostPerKm": {
-        "home": { "value": 0.055, "kind": "assumption", "rationale": "22 kWh/100 km at €0.25/kWh" },
-        "public": { "value": 0.121, "kind": "assumption", "rationale": "22 kWh/100 km at €0.55/kWh" }
-      },
+      "consumption": { "per100km": { "value": 22, "kind": "assumption", "rationale": "WLTP band, 79 kWh seven-seat van" }, "unit": "kWh" },
       "maintenancePerYear": { "value": 450, "kind": "assumption", "rationale": "BEV service schedule, larger tyres" },
-      "insuranceGroup": 26,
       "kerbMassKg": { "value": 2500, "kind": "assumption", "rationale": "manufacturer figure band" },
       "residualCurve": "bev",
       "lifecycle": {
@@ -144,12 +120,8 @@
       "make": "Suzuki", "model": "Vitara 1.4 Boosterjet Hybrid",
       "mobilityClass": "compact-mixed", "powertrain": "mhev", "seats": 5, "luggageLitres": 362,
       "listPrice": { "value": 27000, "kind": "assumption", "rationale": "scale reference, 2026 list price band" },
-      "energyCostPerKm": {
-        "home": { "value": 0.100, "kind": "assumption", "rationale": "5.4 l/100 km at €1.85/l" },
-        "public": { "value": 0.100, "kind": "assumption", "rationale": "forecourt fuel" }
-      },
+      "consumption": { "per100km": { "value": 5.4, "kind": "assumption", "rationale": "WLTP band, 1.4 Boosterjet mild hybrid" }, "unit": "l" },
       "maintenancePerYear": { "value": 430, "kind": "assumption", "rationale": "mild-hybrid petrol service schedule" },
-      "insuranceGroup": 16,
       "kerbMassKg": { "value": 1250, "kind": "assumption", "rationale": "manufacturer figure band" },
       "residualCurve": "ice",
       "lifecycle": {

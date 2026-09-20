@@ -1,6 +1,7 @@
 import { derived, round, type ProvenancedValue } from "./provenance.ts";
 import { estimateRetention, type RetentionValues } from "./retention.ts";
 import type {
+  EnergyPrices,
   FinanceProducts,
   Household,
   InsuranceTariff,
@@ -48,14 +49,15 @@ export interface MobilityRateComposition {
   allInMonthly: ProvenancedValue;
 }
 
+/** Liability priced on the driver, comprehensive cover priced on what the vehicle is worth at placement. */
 export function insurancePremiumPerYear(
-  vehicle: Vehicle,
+  vehicleValue: number,
   household: Household,
   tariff: InsuranceTariff,
   fleet: boolean,
 ): number {
   const young = household.licenceYears < tariff.youngDriverMaxLicenceYears ? tariff.youngDriverUplift.value : 1;
-  const base = vehicle.insuranceGroup * tariff.basePremiumPerGroupPoint.value * young;
+  const base = tariff.rcPremiumPerYear.value * young + vehicleValue * tariff.comprehensiveShareOfValue.value;
   return fleet ? base * (1 - tariff.fleetDiscount.value) : base;
 }
 
@@ -66,9 +68,19 @@ export function maintenancePerYear(vehicle: Vehicle, ageYears: number, annualKm:
   return vehicle.maintenancePerYear.value * ageFactor * kmFactor * uplift + tyres;
 }
 
-export function energyPerMonth(vehicle: Vehicle, household: Household, annualKm: number): number {
-  const perKm = household.homeCharging ? vehicle.energyCostPerKm.home.value : vehicle.energyCostPerKm.public.value;
-  return (perKm * annualKm) / 12;
+/** Energy cost per km: type-approval consumption, lifted to real use, at the price the household actually pays per unit. */
+export function energyCostPerKm(vehicle: Vehicle, household: Household, energy: EnergyPrices): number {
+  const perUnit =
+    vehicle.consumption.unit === "l"
+      ? energy.petrolPerLitre.value
+      : household.homeCharging
+        ? energy.electricityHomePerKwh.value
+        : energy.electricityPublicPerKwh.value;
+  return (vehicle.consumption.per100km.value * energy.realUseUplift.value * perUnit) / 100;
+}
+
+export function energyPerMonth(vehicle: Vehicle, household: Household, annualKm: number, energy: EnergyPrices): number {
+  return (energyCostPerKm(vehicle, household, energy) * annualKm) / 12;
 }
 
 /**
@@ -87,8 +99,9 @@ export function composeMobilityRate(args: {
   finance: FinanceProducts;
   insurance: InsuranceTariff;
   curves: ResidualCurves;
+  energy: EnergyPrices;
 }): MobilityRateComposition {
-  const { vehicle, household, finance, insurance, curves, termMonths, annualKm } = args;
+  const { vehicle, household, finance, insurance, curves, energy, termMonths, annualKm } = args;
   const placement = args.placement ?? NEW_PLACEMENT;
   const life = vehicle.lifecycle;
   const retention = estimateRetention(vehicle, curves, placement.ageYears, placement.odometerKm, placement.condition);
@@ -109,7 +122,7 @@ export function composeMobilityRate(args: {
   const financeCharge = (averageOutstanding * finance.fleetCostOfCapital.value) / 12;
   const maintenance = maintenancePerYear(vehicle, placement.ageYears + termMonths / 24, annualKm, finance) / 12;
   const risk =
-    insurancePremiumPerYear(vehicle, household, insurance, true) / 12 +
+    insurancePremiumPerYear(assetCost, household, insurance, true) / 12 +
     (assetCost * finance.warrantyPoolShare.value) / 12;
   const refurbishmentsAhead = life.refurbishmentYears.filter((year) => year > placement.ageYears).length;
   const reserve = (life.refurbishmentCost.value * refurbishmentsAhead) / remainingLifeMonths;
@@ -129,7 +142,7 @@ export function composeMobilityRate(args: {
     monthlyMargin: margin,
   };
   const fixed = mobilityRate(input);
-  const variable = energyPerMonth(vehicle, household, annualKm);
+  const variable = energyPerMonth(vehicle, household, annualKm, energy);
 
   return {
     vehicleId: vehicle.id,
@@ -142,14 +155,14 @@ export function composeMobilityRate(args: {
       monthlyCapital: derived(round(capital, 2), `(asset cost − material floor) / ${remainingLifeMonths} remaining months × ${consumption} consumption factor`),
       monthlyFinance: derived(round(financeCharge, 2), "average capital outstanding during the term × fleet cost of capital"),
       monthlyMaintenance: derived(round(maintenance, 2), "scheduled maintenance at mid-term age and distance, plus tyres"),
-      monthlyRisk: derived(round(risk, 2), "fleet insurance premium plus warranty pool"),
+      monthlyRisk: derived(round(risk, 2), "fleet insurance (liability plus comprehensive on asset value) plus warranty pool"),
       monthlyLifecycleReserve: derived(round(reserve, 2), `${refurbishmentsAhead} refurbishment(s) ahead, provisioned over remaining life`),
       monthlyAgency: derived(round(agency, 2), "Agency service fee"),
       monthlyOperations: derived(round(operations, 2), "telematics, administration, reassignment logistics"),
       monthlyMargin: derived(round(margin, 2), "margin share of subtotal"),
     },
     fixedRate: derived(round(fixed), "sum of fixed components"),
-    variableUse: derived(round(variable), household.homeCharging ? "energy at home rate × distance" : "energy at public or forecourt rate × distance"),
+    variableUse: derived(round(variable), `${vehicle.consumption.per100km.value} ${vehicle.consumption.unit}/100 km × ${energy.realUseUplift.value} real use × ${vehicle.consumption.unit === "l" ? "petrol" : household.homeCharging ? "home electricity" : "public electricity"} price × distance`),
     allInMonthly: derived(round(fixed + variable), "fixed rate + estimated variable use"),
   };
 }

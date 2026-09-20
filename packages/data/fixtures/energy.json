@@ -1,0 +1,7 @@
+{
+  "_note": "What a unit of energy costs the household. Prices are observed at a date and will move; the model reads them, it does not forecast them.",
+  "petrolPerLitre": { "value": 2.084, "kind": "evidence", "source": "MIMIT Osservatorio prezzi carburanti, benzina self-service, media nazionale settimanale al 14/09/2026 (https://www.mimit.gov.it/it/prezzo-medio-carburanti)" },
+  "electricityHomePerKwh": { "value": 0.3163, "kind": "evidence", "source": "ARERA, prezzo di riferimento cliente domestico vulnerabile in Maggior Tutela, III trimestre 2026, tasse incluse (https://www.arera.it/comunicati-stampa)" },
+  "electricityPublicPerKwh": { "value": 0.55, "kind": "assumption", "rationale": "public AC/DC mix, 2026 operator tariffs without subscription" },
+  "realUseUplift": { "value": 1.1, "kind": "assumption", "rationale": "real-use consumption over WLTP; ICCT on-road gap studies put full hybrids around 10–15%" }
+}

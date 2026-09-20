@@ -39,10 +39,10 @@ export interface Vehicle {
   luggageLitres: number;
   /** Scale reference for modelling, not a quotation. */
   listPrice: ProvenancedValue;
-  /** Energy cost per km at the household's charging or fuel conditions. */
-  energyCostPerKm: { home: ProvenancedValue; public: ProvenancedValue };
+  /** Type-approval consumption per 100 km, in litres or kWh; the price of the unit and the real-use uplift live in EnergyPrices. */
+  consumption: { per100km: ProvenancedValue; unit: "l" | "kWh" };
+  /** Scheduled maintenance per year at the reference distance, excluding tyres. */
   maintenancePerYear: ProvenancedValue;
-  insuranceGroup: number;
   kerbMassKg: ProvenancedValue;
   residualCurve: "ice" | "hev" | "bev";
   lifecycle: {
@@ -87,10 +87,22 @@ export interface FinanceProducts {
 }
 
 export interface InsuranceTariff {
-  basePremiumPerGroupPoint: ProvenancedValue;
+  /** Third-party liability, per year, independent of the vehicle's value. */
+  rcPremiumPerYear: ProvenancedValue;
+  /** Fire, theft and own-damage cover as a share of the vehicle's value per year. */
+  comprehensiveShareOfValue: ProvenancedValue;
   fleetDiscount: ProvenancedValue;
   youngDriverUplift: ProvenancedValue;
   youngDriverMaxLicenceYears: number;
+}
+
+/** What a unit of energy costs the household, and how far real use departs from type approval. */
+export interface EnergyPrices {
+  petrolPerLitre: ProvenancedValue;
+  electricityHomePerKwh: ProvenancedValue;
+  electricityPublicPerKwh: ProvenancedValue;
+  /** Real-use consumption over the WLTP figure. */
+  realUseUplift: ProvenancedValue;
 }
 
 export interface ResidualCurves {

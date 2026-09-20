@@ -224,6 +224,21 @@ export function createServer(dir: string = stateDir): McpServer {
   );
 
   server.registerTool(
+    "break_even_placement",
+    {
+      title: "What would have to be true",
+      description: "Break-even for one placement: the yearly distance at which MML meets the household's budget, and the structural life, fleet cost of capital and consumption factor at which MML costs what long-term rental costs for the same vehicle, term and distance. Says 'none' when no value in range gets there. Reads the context, writes nothing.",
+      inputSchema: {
+        customer_id: customerId,
+        offer_id: z.string(),
+        annual_km: z.number().int().positive().optional().describe("Defaults to the requirement's distance"),
+        term_months: z.number().int().positive().optional(),
+      },
+    },
+    ({ customer_id, offer_id, annual_km, term_months }) => guarded(() => ops.breakEvens(customer_id, offer_id, { annualKm: annual_km, termMonths: term_months })),
+  );
+
+  server.registerTool(
     "list_assumptions",
     {
       title: "Provenance of every number",

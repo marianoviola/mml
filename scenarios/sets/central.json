@@ -1,0 +1,5 @@
+{
+  "id": "central",
+  "description": "The fixtures as documented: evidence where it exists, assumptions with their rationale elsewhere. No override.",
+  "overrides": {}
+}

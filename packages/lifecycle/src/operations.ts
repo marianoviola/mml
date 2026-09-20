@@ -2,6 +2,7 @@ import {
   assessContinuation,
   assessRepair,
   assessVehicleFit,
+  breakEven,
   compareAcquisitionModes,
   composeMobilityRate,
   deriveMobilityRequirement,
@@ -21,6 +22,7 @@ import {
 import { loadFixtures, type Fixtures, type Offer } from "@mml/data";
 import type { ContextStore, CustomerContext } from "./context.ts";
 import { placementSensitivity, type PlacementSensitivity } from "./sensitivity.ts";
+import { placementBreakEvens, type PlacementBreakEvens } from "./break-even.ts";
 
 export interface OfferQuote {
   offer: Offer;
@@ -39,7 +41,11 @@ export interface ShortlistResult {
 export type BudgetAdjustment =
   | { kind: "distance"; annualKm: number; allIn: number; note: string }
   | { kind: "later-life"; offerId: string; allIn: number; note: string }
+  | { kind: "budget"; annualKm: number; requiredBudget: number; note: string }
   | { kind: "none"; note: string };
+
+/** Below this a family's declared use is not a distance adjustment but a different requirement. */
+const MINIMUM_ANNUAL_KM = 10000;
 
 export interface QuoteResult {
   quote: OfferQuote;
@@ -100,7 +106,7 @@ export class LifecycleOperations {
 
   private quoteOffer(household: Household, requirement: MobilityRequirement, offer: Offer, termMonths?: number, annualKm?: number): OfferQuote {
     const vehicle = this.vehicle(offer.vehicleId);
-    const { finance, insurance, curves } = this.fixtures;
+    const { finance, insurance, curves, energy } = this.fixtures;
     const rate = composeMobilityRate({
       vehicle,
       household,
@@ -110,6 +116,7 @@ export class LifecycleOperations {
       finance,
       insurance,
       curves,
+      energy,
     });
     const gap = rate.allInMonthly.value - household.monthlyBudget;
     return { offer, vehicle, rate, withinBudget: gap <= 0, budgetGap: round(gap) };
@@ -160,7 +167,7 @@ export class LifecycleOperations {
     const { household, requirement } = this.requireHousehold(context);
     const offer = this.offer(offerId);
     const quote = this.quoteOffer(household, requirement, offer, termMonths, annualKm);
-    const { finance, insurance, curves } = this.fixtures;
+    const { finance, insurance, curves, energy } = this.fixtures;
     const comparison = compareAcquisitionModes({
       vehicle: quote.vehicle,
       household,
@@ -170,22 +177,24 @@ export class LifecycleOperations {
       finance,
       insurance,
       curves,
+      energy,
       placement: placementOf(offer),
     });
     const adjustments: BudgetAdjustment[] = [];
     if (!quote.withinBudget) {
       const km = annualKm ?? requirement.annualKm;
-      for (const candidateKm of [km - 2500, km - 5000, km - 7500, km - 10000].filter((value) => value >= 5000)) {
-        const trial = this.quoteOffer(household, requirement, offer, termMonths, candidateKm);
-        if (trial.withinBudget) {
-          adjustments.push({
-            kind: "distance",
-            annualKm: candidateKm,
-            allIn: trial.rate.allInMonthly.value,
-            note: `At ${candidateKm} km/yr this placement is €${trial.rate.allInMonthly.value}/month, within budget.`,
-          });
-          break;
-        }
+      const allInAt = (candidateKm: number) => this.quoteOffer(household, requirement, offer, termMonths, candidateKm).rate.allInMonthly.value;
+      const breakEvenKm = km > MINIMUM_ANNUAL_KM ? breakEven(allInAt, household.monthlyBudget, MINIMUM_ANNUAL_KM, km, { step: 500 }) : undefined;
+      if (breakEvenKm !== undefined) {
+        const trial = this.quoteOffer(household, requirement, offer, termMonths, breakEvenKm);
+        const settledKm = trial.withinBudget ? breakEvenKm : breakEvenKm - 500;
+        const settled = trial.withinBudget ? trial : this.quoteOffer(household, requirement, offer, termMonths, settledKm);
+        adjustments.push({
+          kind: "distance",
+          annualKm: settledKm,
+          allIn: settled.rate.allInMonthly.value,
+          note: `At ${settledKm} km/yr this placement is €${settled.rate.allInMonthly.value}/month, within budget.`,
+        });
       }
       const laterLives = this.fixtures.offers.filter(
         (candidate) => candidate.vehicleId === offer.vehicleId && candidate.ageYears > offer.ageYears,
@@ -203,7 +212,17 @@ export class LifecycleOperations {
         }
       }
       if (adjustments.length === 0) {
-        adjustments.push({ kind: "none", note: "No distance or placement adjustment brings this offer within budget; consider a smaller class or a higher budget." });
+        const atDeclared = quote.rate.allInMonthly.value;
+        const atFloor = km > MINIMUM_ANNUAL_KM ? allInAt(MINIMUM_ANNUAL_KM) : atDeclared;
+        adjustments.push({
+          kind: "budget",
+          annualKm: km,
+          requiredBudget: atDeclared,
+          note:
+            `No distance down to ${MINIMUM_ANNUAL_KM} km/yr brings this placement within €${household.monthlyBudget}: it needs €${atDeclared}/month at ${km} km/yr` +
+            (atFloor < atDeclared ? ` and €${atFloor}/month at ${MINIMUM_ANNUAL_KM} km/yr.` : ".") +
+            " What has to give is the budget or the class.",
+        });
       }
     }
     this.store.append(
@@ -225,6 +244,18 @@ export class LifecycleOperations {
       termMonths: options.termMonths ?? requirement.termMonths,
       annualKm: options.annualKm ?? requirement.annualKm,
       shock: options.shock,
+    });
+  }
+
+  /** Break-even questions for one placement: distance for the budget, and structural life, cost of capital and consumption factor against long-term rental. Reads the context, writes nothing. */
+  breakEvens(customerId: string, offerId: string, options: { termMonths?: number; annualKm?: number } = {}): PlacementBreakEvens {
+    const context = this.store.get(customerId);
+    const { household, requirement } = this.requireHousehold(context);
+    return placementBreakEvens(this.fixtures, {
+      offer: this.offer(offerId),
+      household,
+      termMonths: options.termMonths ?? requirement.termMonths,
+      annualKm: options.annualKm ?? requirement.annualKm,
     });
   }
 
@@ -341,6 +372,7 @@ export class LifecycleOperations {
       finance: this.fixtures.finance,
       insurance: this.fixtures.insurance,
       curves: this.fixtures.curves,
+      energy: this.fixtures.energy,
     });
     const alternatives = this.fixtures.offers
       .filter((offer) => offer.source === "fleet" && offer.id !== context.contract!.offerId)

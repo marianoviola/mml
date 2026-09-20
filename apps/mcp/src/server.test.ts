@@ -27,7 +27,7 @@ test("the server exposes the lifecycle graph as tools, the context as a resource
   try {
     const tools = (await client.listTools()).tools.map((tool) => tool.name).sort();
     assert.deepEqual(tools, [
-      "advance_time", "capture_household", "get_context", "list_assumptions", "list_catalogue", "quote_placement",
+      "advance_time", "break_even_placement", "capture_household", "get_context", "list_assumptions", "list_catalogue", "quote_placement",
       "report_event", "resolve_event", "review_continuation", "sensitivity_placement", "shortlist_placements", "sign_contract",
     ]);
     const prompts = (await client.listPrompts()).prompts.map((prompt) => prompt.name);
@@ -64,7 +64,13 @@ test("an orchestrator can walk the €450 journey through the tools and read the
     const sensitivity = await call("sensitivity_placement", { customer_id: "rossi", offer_id: cheapest.offerId, annual_km: km });
     assert.equal(sensitivity.value.baseline.mml, quote.value.adjustments.find((a: { kind: string }) => a.kind === "distance")?.allIn ?? quote.value.quote.rate.allInMonthly.value);
     assert.ok(sensitivity.value.leading.includes("vehicle.listPrice"));
-    assert.ok(sensitivity.value.rows.every((row: { kind: string }) => row.kind === "assumption"), "nothing is evidence yet, and the table must say so");
+    const kinds = new Set(sensitivity.value.rows.map((row: { kind: string }) => row.kind));
+    assert.ok(kinds.has("evidence") && kinds.has("assumption"), "the table tells evidence from assumption for every input that moves the quote");
+    assert.equal(sensitivity.value.rows.find((row: { path: string }) => row.path === "vehicle.listPrice").kind, "evidence");
+
+    const breakEvens = await call("break_even_placement", { customer_id: "rossi", offer_id: cheapest.offerId, annual_km: km });
+    assert.equal(breakEvens.value.rows.length, 4);
+    assert.ok(breakEvens.value.rows.every((row: { note: string }) => row.note.length > 0), "every break-even row says what it found, including 'none'");
 
     const contract = await call("sign_contract", { customer_id: "rossi", offer_id: cheapest.offerId, started_at: "2026-09-15", annual_km: km });
     assert.equal(contract.value.offerId, cheapest.offerId);

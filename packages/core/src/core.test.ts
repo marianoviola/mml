@@ -5,7 +5,8 @@ import { assessVehicleFit, deriveMobilityRequirement } from "./mobility-class.ts
 import { assessRepair } from "./condition.ts";
 import { assessContinuation } from "./continuation.ts";
 import { assumption, type ProvenancedSeries } from "./provenance.ts";
-import { oneAtATimeSensitivity, provenancedPaths } from "./sensitivity.ts";
+import { oneAtATimeSensitivity, provenancedPaths, withProvenancedValue } from "./sensitivity.ts";
+import { breakEven } from "./break-even.ts";
 import type { Household, RepairEventType, Vehicle, ResidualCurves } from "./types.ts";
 import { estimateRetention } from "./retention.ts";
 
@@ -17,8 +18,8 @@ const household: Household = {
 const vehicle: Vehicle = {
   id: "v", make: "Test", model: "Estate", mobilityClass: "family-touring", powertrain: "hev", seats: 5, luggageLitres: 600,
   listPrice: assumption(30000, "test"),
-  energyCostPerKm: { home: assumption(0.08, "t"), public: assumption(0.08, "t") },
-  maintenancePerYear: assumption(450, "t"), insuranceGroup: 18, kerbMassKg: assumption(1400, "t"), residualCurve: "hev",
+  consumption: { per100km: assumption(4.5, "t"), unit: "l" },
+  maintenancePerYear: assumption(450, "t"), kerbMassKg: assumption(1400, "t"), residualCurve: "hev",
   lifecycle: {
     stage: "mml-compatible", structuralLifeYears: assumption(15, "t"), softwareSupportHorizonYears: assumption(10, "t"),
     partsAvailability: "high", modularLighting: false, refurbishmentYears: [5, 10], refurbishmentCost: assumption(2500, "t"),
@@ -143,4 +144,15 @@ test("one-at-a-time sensitivity shocks every provenanced value and series, ranks
   assert.ok(result.rows[0].weight >= result.rows.at(-1)!.weight);
   assert.deepEqual(provenancedPaths({ a: { b: assumption(1, "t") } }).map((target) => target.path), ["a.b"]);
   assert.throws(() => oneAtATimeSensitivity(inputs, () => ({ x: 1 }), { shock: -1 }), RangeError);
+});
+
+test("break-even bisects a monotone function, rounds to a step and says when there is no crossing", () => {
+  assert.ok(Math.abs(breakEven((x) => 2 * x + 1, 11, 0, 100)! - 5) < 0.01);
+  assert.equal(breakEven((x) => 100 - x, 40, 0, 100, { step: 5 }), 60);
+  assert.equal(breakEven((x) => x * x, 2, 0, 10, { tolerance: 1e-9 })!.toFixed(6), Math.SQRT2.toFixed(6));
+  assert.equal(breakEven((x) => x + 1000, 5, 0, 10), undefined, "no value in range reaches the target");
+  assert.throws(() => breakEven((x) => x, 1, 5, 5), RangeError);
+  const shocked = withProvenancedValue({ a: { b: assumption(1, "t") } }, "a.b", 3);
+  assert.equal(shocked.a.b.value, 3);
+  assert.throws(() => withProvenancedValue({ a: 1 }, "a", 2));
 });

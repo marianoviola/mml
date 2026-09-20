@@ -24,6 +24,21 @@ jobs:
       - run: pnpm -r typecheck
       - run: pnpm -r test
 
-      # The golden scenario must still run from a clean checkout and produce a bundle with provenance.
-      - run: node apps/cli/dist/index.js scenario four-fifty --out "$RUNNER_TEMP/scenario-four-fifty.json" --state "$RUNNER_TEMP/state"
-      - run: node -e 'const b=require(process.env.RUNNER_TEMP+"/scenario-four-fifty.json"); if(!b.modelVersion||!b.fixtureHashes) process.exit(1)'
+      # The committed canonical bundles must be reproducible from a clean checkout: same output hash per assumption set.
+      - run: node apps/cli/dist/index.js bundles --dir "$RUNNER_TEMP/bundles"
+      - run: |
+          node -e '
+            const fs = require("fs");
+            const version = require("./package.json").version;
+            const committed = JSON.parse(fs.readFileSync(`bundles/${version}/index.json`, "utf8"));
+            const fresh = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + "/bundles/index.json", "utf8"));
+            let failed = false;
+            for (const bundle of committed.bundles) {
+              const match = fresh.bundles.find((candidate) => candidate.set === bundle.set);
+              const ok = match && match.outputHash === bundle.outputHash && match.setHash === bundle.setHash;
+              console.log(`${bundle.set}: committed ${bundle.outputHash}, fresh ${match?.outputHash} ${ok ? "ok" : "MISMATCH"}`);
+              if (!ok) failed = true;
+            }
+            if (JSON.stringify(committed.fixtureHashes) !== JSON.stringify(fresh.fixtureHashes)) { console.log("fixture hashes differ"); failed = true; }
+            process.exit(failed ? 1 : 0);
+          '

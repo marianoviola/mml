@@ -9,7 +9,7 @@ import {
   type Placement,
 } from "./mobility-rate.ts";
 import { estimateRetention } from "./retention.ts";
-import type { FinanceProducts, Household, InsuranceTariff, ResidualCurves, Vehicle } from "./types.ts";
+import type { EnergyPrices, FinanceProducts, Household, InsuranceTariff, ResidualCurves, Vehicle } from "./types.ts";
 
 export type AcquisitionMode = "ownership" | "long-term-rental" | "mml";
 
@@ -46,14 +46,15 @@ export function compareAcquisitionModes(args: {
   finance: FinanceProducts;
   insurance: InsuranceTariff;
   curves: ResidualCurves;
+  energy: EnergyPrices;
   placement?: Placement;
 }): AcquisitionComparison {
-  const { vehicle, household, purchasePrice, termMonths, annualKm, finance, insurance, curves } = args;
+  const { vehicle, household, purchasePrice, termMonths, annualKm, finance, insurance, curves, energy } = args;
   const placement = args.placement ?? { ageYears: 0, odometerKm: 0, condition: "excellent" as const };
   const years = termMonths / 12;
   const endAge = placement.ageYears + years;
   const endKm = placement.odometerKm + annualKm * years;
-  const energy = energyPerMonth(vehicle, household, annualKm);
+  const energyMonthly = energyPerMonth(vehicle, household, annualKm, energy);
   const maintenanceRetail = maintenancePerYear(vehicle, placement.ageYears + years / 2, annualKm, finance, finance.retailMaintenanceUplift.value) / 12;
 
   // Ownership: buy at the offer price, finance a share, sell at the end at the market curve.
@@ -62,7 +63,7 @@ export function compareAcquisitionModes(args: {
   const financed = purchasePrice * finance.loanFinancedShare.value;
   const payment = annuityPayment(financed, finance.loanApr.value, termMonths);
   const interest = (payment * termMonths - financed) / termMonths;
-  const ownershipInsurance = insurancePremiumPerYear(vehicle, household, insurance, false) / 12;
+  const ownershipInsurance = insurancePremiumPerYear(purchasePrice, household, insurance, false) / 12;
   const tax = finance.ownershipTaxMonthly.value;
   const repairProvision = (purchasePrice * finance.ownershipRepairProvisionShare.value) / 12;
   const ownershipFixed = depreciation + interest + ownershipInsurance + maintenanceRetail + tax + repairProvision;
@@ -70,19 +71,19 @@ export function compareAcquisitionModes(args: {
   // Long-term rental: the lessor prices depreciation over the term, its cost of capital, services and margin.
   const nltCapital = (purchasePrice * (1 - finance.fleetDiscount.value) - residual) / termMonths;
   const nltFinance = (((purchasePrice * (1 - finance.fleetDiscount.value) + residual) / 2) * finance.nltCostOfCapital.value) / 12;
-  const nltInsurance = insurancePremiumPerYear(vehicle, household, insurance, true) / 12;
+  const nltInsurance = insurancePremiumPerYear(purchasePrice * (1 - finance.fleetDiscount.value), household, insurance, true) / 12;
   const nltServices = maintenancePerYear(vehicle, placement.ageYears + years / 2, annualKm, finance) / 12 + finance.operationsMonthly.value;
   const nltSubtotal = nltCapital + nltFinance + nltInsurance + nltServices;
   const nltFixed = nltSubtotal * (1 + finance.nltMarginShare.value);
 
-  const mml = composeMobilityRate({ vehicle, household, placement, termMonths, annualKm, finance, insurance, curves });
+  const mml = composeMobilityRate({ vehicle, household, placement, termMonths, annualKm, finance, insurance, curves, energy });
 
   const modes: ModeCost[] = [
     {
       mode: "ownership",
       fixed: derived(round(ownershipFixed), "depreciation + interest + retail insurance + retail maintenance + tax + unplanned repair provision"),
-      variableUse: derived(round(energy), "energy"),
-      monthlyEquivalent: derived(round(ownershipFixed + energy), "fixed + energy"),
+      variableUse: derived(round(energyMonthly), "energy"),
+      monthlyEquivalent: derived(round(ownershipFixed + energyMonthly), "fixed + energy"),
       breakdown: {
         depreciation: derived(round(depreciation), `(${purchasePrice} − ${round(residual)} resale) / ${termMonths}`),
         interest: derived(round(interest), `loan on ${round(financed)} at ${round(finance.loanApr.value * 100, 2)}% APR`),
@@ -99,8 +100,8 @@ export function compareAcquisitionModes(args: {
     {
       mode: "long-term-rental",
       fixed: derived(round(nltFixed), "term depreciation + lessor cost of capital + insurance + services + margin"),
-      variableUse: derived(round(energy), "energy"),
-      monthlyEquivalent: derived(round(nltFixed + energy), "fixed + energy"),
+      variableUse: derived(round(energyMonthly), "energy"),
+      monthlyEquivalent: derived(round(nltFixed + energyMonthly), "fixed + energy"),
       breakdown: {
         depreciation: derived(round(nltCapital), "lessor cost less residual, over the term"),
         finance: derived(round(nltFinance), "lessor cost of capital"),
