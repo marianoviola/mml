@@ -19,5 +19,8 @@
   "maintenanceAgeFactorPerYear": { "value": 0.04, "kind": "assumption", "rationale": "scheduled maintenance cost grows 4% per year of vehicle age" },
   "maintenanceReferenceAnnualKm": { "value": 15000, "kind": "assumption", "rationale": "distance the maintenancePerYear figures assume" },
   "maintenanceKmExponent": { "value": 0.7, "kind": "assumption", "rationale": "maintenance scales sub-linearly with distance: fixed service intervals plus wear" },
-  "tyresPerKm": { "value": 0.015, "kind": "assumption", "rationale": "tyre wear, €/km, mid-range family-car tyres" }
+  "tyresPerKm": { "value": 0.015, "kind": "assumption", "rationale": "tyre wear, €/km, mid-range family-car tyres" },
+  "unplannedEventsPerYear": { "value": 0.4, "kind": "assumption", "rationale": "chargeable events (own-fault damage, glass, wheels) per year for a family car in metropolitan use: one every two and a half years" },
+  "nltDeductiblePerEvent": { "value": 500, "kind": "assumption", "rationale": "what the renter pays per event under a long-term rental: operator guides (DGA NLT, Trevirent, Finrent, 2025–2026) put the kasko franchigia at €500–1,000 and RCA at €250; the lower kasko band" },
+  "nltReturnConditionCharge": { "value": 900, "kind": "assumption", "rationale": "expected settlement at return for damage beyond fair wear under the operators' inspection thresholds (scratches over 10 cm, wheel damage over 3 cm, glass over 1 cm): one panel repaint and one wheel refurbishment at bodyshop tariff, band" }
 }

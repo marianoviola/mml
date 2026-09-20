@@ -90,17 +90,20 @@ fixtures remain assumptions with a rationale. The canonical bundles are in
   112,000 km, is €590 all-in at 20,000 km and €468 at 10,000 km; the model
   finds no distance that fits and says so, naming the budget that would.
   The scenario contracts at the declared distance: the budget gave, and the
-  contract records it. New, the same vehicle is €754 under MML, €664 under
+  contract records it. New, the same vehicle is €754 under MML, €696 under
   long-term rental, €752 under ownership.
-- **MML as priced here is dearer than long-term rental on the same vehicle,
-  new or used, by €90–100 a month.** Break-even says what would have to be
-  true for that to change on the new vehicle: a structural life of 25.5
-  years against the central 15, or fleet capital at 1.1% against 5%, or a
-  first-life consumption factor of 0.69 against 1.2. On the third life no
-  structural life up to 30 years closes the gap on its own. What MML charges
-  for is in the breakdown, agency, operations, margin, the lifecycle
-  reserve and comprehensive cover on the asset; the case that these are
-  worth €90 a month is the publication's to make, not the rate's.
+- **MML as priced here is dearer than long-term rental on the same vehicle
+  by about €60 a month, new (€754 against €696) or used (€590 against
+  €525).** The rental is priced on the same footing: the deductibles and the
+  condition settlement at return that the renter carries outside the rate
+  are in its column as expected values. Break-even says what would have to
+  be true for the gap to close on the new vehicle: a structural life of 20.5
+  years against the central 15, or fleet capital at 2.5% against 5%, or a
+  first-life consumption factor of 0.69 against 1.2; on the third life,
+  22.5 years of life or a later-life factor of 0.48. What MML charges for
+  is in the breakdown, agency, operations, margin, the lifecycle reserve and
+  comprehensive cover on the asset; the case that these are worth €60 a
+  month is the publication's to make, not the rate's.
 - **The answer moves with the evidence, not only with the hypotheses.** At
   +10% per input on the contracted placement: list price, the residual
   curve and its condition factor (+€24 each), fuel price, real-use uplift
@@ -138,6 +141,9 @@ describes: put a real household in front of it.
 - Prices carry a date. Fuel, tariffs and list prices move; the bundle records
   the fixture hashes it was computed from.
 - Long-term rental of a later-life vehicle is rarely offered; it is shown on
-  the same footing for comparability and says so.
+  the same footing for comparability and says so. Its deductibles and
+  return settlement are expected values from documented contract structure
+  (franchigia bands, inspection thresholds), not from a published average,
+  which does not exist.
 - The Material Capital Credit accrues linearly to the material floor over the
   term. Chapter 2.5 leaves the method open; this is one method, labelled.

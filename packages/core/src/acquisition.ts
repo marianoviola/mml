@@ -74,7 +74,10 @@ export function compareAcquisitionModes(args: {
   const nltInsurance = insurancePremiumPerYear(purchasePrice * (1 - finance.fleetDiscount.value), household, insurance, true) / 12;
   const nltServices = maintenancePerYear(vehicle, placement.ageYears + years / 2, annualKm, finance) / 12 + finance.operationsMonthly.value;
   const nltSubtotal = nltCapital + nltFinance + nltInsurance + nltServices;
-  const nltFixed = nltSubtotal * (1 + finance.nltMarginShare.value);
+  // What the rental leaves with the household, outside the rate: deductibles on events and the condition settlement at return.
+  const nltDeductibles = (finance.unplannedEventsPerYear.value * finance.nltDeductiblePerEvent.value) / 12;
+  const nltReturnCondition = finance.nltReturnConditionCharge.value / termMonths;
+  const nltFixed = nltSubtotal * (1 + finance.nltMarginShare.value) + nltDeductibles + nltReturnCondition;
 
   const mml = composeMobilityRate({ vehicle, household, placement, termMonths, annualKm, finance, insurance, curves, energy });
 
@@ -99,7 +102,7 @@ export function compareAcquisitionModes(args: {
     },
     {
       mode: "long-term-rental",
-      fixed: derived(round(nltFixed), "term depreciation + lessor cost of capital + insurance + services + margin"),
+      fixed: derived(round(nltFixed), "term depreciation + lessor cost of capital + insurance + services + margin, plus expected deductibles and the return settlement the renter carries"),
       variableUse: derived(round(energyMonthly), "energy"),
       monthlyEquivalent: derived(round(nltFixed + energyMonthly), "fixed + energy"),
       breakdown: {
@@ -108,10 +111,12 @@ export function compareAcquisitionModes(args: {
         insurance: derived(round(nltInsurance), "fleet premium"),
         services: derived(round(nltServices), "maintenance and administration"),
         margin: derived(round(nltSubtotal * finance.nltMarginShare.value), "lessor margin"),
+        deductibles: derived(round(nltDeductibles), `${finance.unplannedEventsPerYear.value} events/yr × €${finance.nltDeductiblePerEvent.value} franchigia, carried by the renter`),
+        returnCondition: derived(round(nltReturnCondition), `€${finance.nltReturnConditionCharge.value} expected settlement at return, over the term`),
       },
       notes: [
         "Depreciation is priced over the rental term as if the vehicle's life ended at return.",
-        "Condition at return is settled as a penalty, not priced into the rate.",
+        "Deductibles and the condition settlement at return are the renter's, outside the rate; shown here as expected values so the modes compare on one footing.",
         ...(placement.ageYears > 0 ? ["Long-term rental of a later-life vehicle is rarely offered; shown on the same footing for comparability."] : []),
       ],
     },

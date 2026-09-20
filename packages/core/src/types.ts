@@ -83,6 +83,10 @@ export interface FinanceProducts {
   maintenanceReferenceAnnualKm: ProvenancedValue;
   maintenanceKmExponent: ProvenancedValue;
   tyresPerKm: ProvenancedValue;
+  /** What long-term rental leaves with the renter: deductibles on events, and the condition settlement at return. */
+  unplannedEventsPerYear: ProvenancedValue;
+  nltDeductiblePerEvent: ProvenancedValue;
+  nltReturnConditionCharge: ProvenancedValue;
   reassignmentCost: ProvenancedValue;
 }
 
