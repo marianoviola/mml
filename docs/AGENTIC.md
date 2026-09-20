@@ -77,32 +77,35 @@ each, so a conversation can stop and resume in another session or runtime.
 ## What the run says, model 0.2.0
 
 The scenario runs Part 1's household, two adults, two children, regular long
-journeys, 20,000 km a year, no home charging, €450 a month all-in, through
-the whole graph, under three assumption sets (`scenarios/sets/`). The
-Corolla Touring Sports it rests on is now documented from Toyota Motor
-Italia's MY26 price list and maintenance tariff, MIMIT fuel prices, IVASS
-liability premiums and 77 used-market asking prices; the rest of the
-fixtures remain assumptions with a rationale. The canonical bundles are in
-`bundles/0.2.0/`. Findings, central set:
+journeys, 20,000 km a year, no home charging, €450 a month, through the
+whole graph, under three assumption sets (`scenarios/sets/`). The budget is
+tested as chapter 2.3 defines the product: against the fixed Mobility Rate,
+with energy estimated and shown beside it. The Corolla Touring Sports the
+scenario rests on is documented from Toyota Motor Italia's MY26 price list
+and maintenance tariff, MIMIT fuel prices, IVASS liability premiums and 77
+used-market asking prices; the rest of the fixtures remain assumptions with
+a rationale. The canonical bundles are in `bundles/0.2.0/`. Findings,
+central set:
 
-- **€450 is not reachable in the family-touring class at 2026 prices, under
-  any mode.** The cheapest placement, a third-life Corolla at six years and
-  112,000 km, is €590 all-in at 20,000 km and €468 at 10,000 km; the model
-  finds no distance that fits and says so, naming the budget that would.
-  The scenario contracts at the declared distance: the budget gave, and the
-  contract records it. New, the same vehicle is €754 under MML, €696 under
-  long-term rental, €752 under ownership.
-- **MML as priced here is dearer than long-term rental on the same vehicle
-  by about €60 a month, new (€754 against €696) or used (€590 against
-  €525).** The rental is priced on the same footing: the deductibles and the
-  condition settlement at return that the renter carries outside the rate
-  are in its column as expected values. Break-even says what would have to
-  be true for the gap to close on the new vehicle: a structural life of 20.5
-  years against the central 15, or fleet capital at 2.5% against 5%, or a
-  first-life consumption factor of 0.69 against 1.2; on the third life,
-  22.5 years of life or a later-life factor of 0.48. What MML charges for
-  is in the breakdown, agency, operations, margin, the lifecycle reserve and
-  comprehensive cover on the asset; the case that these are worth €60 a
+- **€450 buys the family-touring class in its third life, not new.** The
+  third-life Corolla, six years and 112,000 km, is €435 a month fixed, of
+  which €18 is the contribution that builds the Material Capital Credit;
+  with estimated fuel at 20,000 km the household's expected total is €607.
+  The second life is €489 fixed, the new vehicle €600. Nothing had to give;
+  the contract is at the declared distance. On Part 1's statistical
+  envelope (expected total less insurance and finance) the same placement
+  is €494, against Italy's €339 and the six-country average of €476.
+- **MML as priced here costs more than long-term rental on the same
+  vehicle: new, €772 against €696 all-in; third life, €607 against €525.**
+  The rental is on the same footing, with the deductibles and the return
+  settlement the renter carries shown as expected values, and €18 of the
+  MML figure returns to the household as credit. Break-even says what
+  would have to be true for the gap to close on the new vehicle: a
+  structural life of 23 years against the central 15, or fleet capital at
+  1.7% against 5%, or a first-life consumption factor of 0.77 against 1.2;
+  on the third life, 27 years of life or a later-life factor of 0.37. Under
+  the optimistic set the new vehicle is at parity, €664 each. What MML
+  charges for is in the breakdown; the case that it is worth €60–80 a
   month is the publication's to make, not the rate's.
 - **The answer moves with the evidence, not only with the hypotheses.** At
   +10% per input on the contracted placement: list price, the residual
@@ -111,16 +114,16 @@ fixtures remain assumptions with a rationale. The canonical bundles are in
   consumption factor (+€13). Three of the six heaviest inputs are now
   evidence with a source; the two that are MML's own hypotheses cannot be
   sourced, only argued, and the adverse and optimistic sets argue them.
-- **Across sets, the €450 answer spans €499 to €738 at 20,000 km.**
-  Optimistic (18-year life, 0.8 consumption, 4% capital, 2025 fuel) fits the
-  budget at 15,000 km; adverse (12-year life, 1.0 consumption, 7% capital,
-  fuel at €2.30) needs €738. That range, not the central point, is what a
-  publication can honestly quote.
-- The lifecycle standard holds as before: a sealed headlamp forces the
-  assembly at €1,100; hail is cosmetic, repaired for €600 against €2,800 for
-  the panel, and would cost an owner about €7,000 of resale value; at eight
-  years and 152,000 km, with a battery module due, the vehicle is worth
-  €12,721 repaired against €9,710 harvested and continues.
+- **Across sets the third-life fixed rate spans €372 to €558.** Optimistic
+  (18-year life, 0.8 consumption, 4% capital, 2025 fuel) fits with €78 to
+  spare; adverse (12-year life, 1.0 consumption, 7% capital, fuel at €2.30)
+  needs €558 and no distance down to 10,000 km fits. That range, not the
+  central point, is what a publication can honestly quote.
+- The lifecycle standard holds: a sealed headlamp forces the assembly at
+  €1,100; hail is cosmetic, repaired for €600 against €2,800 for the panel,
+  and would cost an owner about €7,000 of resale value; at eight years and
+  152,000 km, with a battery module due, the vehicle is worth €12,721
+  repaired against €9,710 harvested and continues.
 
 Every value's status is listed by `list_assumptions`, per set. The next
 step for the model is the rest of M3, evidence for the other six vehicles

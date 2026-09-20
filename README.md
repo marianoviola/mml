@@ -43,8 +43,9 @@ See `docs/AGENTIC.md` for the agentic layer and how to run it.
 
 Status: **model 0.2.0**. The deterministic core, the fixture layer, the lifecycle
 operations, sensitivity, break-even and the MCP server exist and are tested; the
-€450 scenario runs end to end under three assumption sets and its bundles are
-committed under `bundles/0.2.0/`. The vehicle the scenario rests on is documented
+€450 scenario runs end to end under three assumption sets, with the budget
+tested against the fixed Mobility Rate as chapter 2.3 defines it, and its
+bundles are committed under `bundles/0.2.0/`. The vehicle the scenario rests on is documented
 from published sources; the other six remain assumptions with a rationale. What the
 run says is in `docs/AGENTIC.md`.
 

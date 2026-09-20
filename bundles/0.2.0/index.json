@@ -1,7 +1,7 @@
 {
   "scenario": "four-fifty",
-  "modelVersion": "0.2.0+a24b3ad",
-  "generatedAt": "2026-09-20T11:53:54.560Z",
+  "modelVersion": "0.2.0+d6a66dd",
+  "generatedAt": "2026-09-20T19:40:20.847Z",
   "fixtureHashes": {
     "vehicles.json": "b94681f2d7e3",
     "offers.json": "1fb17d035429",
@@ -16,19 +16,19 @@
       "set": "adverse",
       "setHash": "b6a5f9808275",
       "file": "four-fifty.adverse.json",
-      "outputHash": "9219935ba9a94ed1"
+      "outputHash": "affcd2f846d27a59"
     },
     {
       "set": "central",
       "setHash": "bc980482a2b6",
       "file": "four-fifty.central.json",
-      "outputHash": "3b25875581f2220a"
+      "outputHash": "0550aff01268a6df"
     },
     {
       "set": "optimistic",
       "setHash": "e63cdb8fa7b0",
       "file": "four-fifty.optimistic.json",
-      "outputHash": "5eecbea0cf4fbb3e"
+      "outputHash": "f5b7c31be3889c96"
     }
   ],
   "tables": [
@@ -36,5 +36,5 @@
     "sensitivity.csv",
     "break-even.csv"
   ],
-  "manifestHash": "1b2f0eaa885d0cd6"
+  "manifestHash": "34605a31d324bdf8"
 }

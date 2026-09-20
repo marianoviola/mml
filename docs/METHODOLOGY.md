@@ -13,6 +13,14 @@ Two consequences for the fixtures:
 - A curve or schedule (a residual curve, a component retention series) carries **one status for the whole series**. It is one claim about the market, not sixteen independent numbers.
 - The model's own structural constants (how maintenance scales with age and distance, the share of material value held as the credit floor) live in the fixtures, not in code, so that `list_assumptions` lists every number the result rests on and the sensitivity analysis can shock it.
 
+## What €450 measures
+
+The chapters and the model use one definition: the household's budget is for the **fixed Mobility Rate** (chapter 2.3), which includes capital, finance, maintenance, the unscheduled-maintenance allowance, insurance, Agency, operations, the lifecycle reserve, margin and the separately disclosed contribution to the Material Capital Credit. Energy is estimated from distance and prices and paid separately. Every quote reports three figures so that any reader can reconcile them:
+
+- **fixed rate**: what the budget is tested against;
+- **expected total**: fixed rate plus estimated use, what the household will actually pay in a month;
+- **envelope basis**: expected total less insurance and finance, the COICOP perimeter (purchase and operation of personal transport) of Part 1's national envelopes, for comparison with spending statistics only.
+
 ## Evidence conventions
 
 - An evidence value names its source in one string: publisher, document, date, and a URL where one exists. A price observed on a date is evidence for that date; the fixture does not forecast it.
