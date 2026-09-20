@@ -30,6 +30,10 @@ See `docs/AGENTIC.md` for the agentic layer and how to run it.
 - The publication interprets the model; it does not contain the model.
 - Site builds never execute simulations.
 
+## Agentic MML
+
+`agentic-mml/` is a separate, related experiment, not part of the MML model above. Where MML asks what a lifecycle-native mobility system would look like if the industry restructured around it, Agentic MML asks whether a persistent orchestrator coordinating specialised tools per domain (OEM, dealer, finance, insurance, commerce, maintenance, resale) can deliver that experience today, over existing fragmented systems, reframing the funnel as a graph rather than a linear sequence. It is experiential and additive: it does not replace, depend on, or restructure the DCF/Monte Carlo/CLI/MCP/Agency work above. See [`notes/mml-agentic-lifecycle.md`](notes/mml-agentic-lifecycle.md) for the full working note.
+
 ## Initial roadmap
 
 1. Build deterministic DCF and mobility-rate primitives.
