@@ -1,18 +1,29 @@
-# Agentic MML
+# Agentic MML: current MCP surface and future experiment
 
-The working note asked one question: can an agent deliver the experience of a
-lifecycle-native automotive model before the automotive system itself has
-changed? This document describes the first stone laid to test it.
+The working note asks one question: can a governed agentic layer deliver the
+experience of a lifecycle-native automotive model before the automotive system
+itself has changed? This document distinguishes the first enabling interface
+that exists today from that separate future experiment.
 
-## What was built
+The public series *The Lifecycle Transition* is the conceptual reference. Its
+first five published parts define the current alignment boundary; see
+[`PUBLICATION-ALIGNMENT.md`](PUBLICATION-ALIGNMENT.md). The editorial series
+lives in a separate repository and is not duplicated here.
 
-A Model Context Protocol server that exposes the MML lifecycle as a graph of
-operations, backed by a deterministic model and a persistent customer
-context. Any orchestrating agent that speaks MCP (Claude Code, Claude
-Desktop, or another runtime) can act as the Agency of chapter 6: hold one
-relationship with a household across discovery, requirement, shortlist,
-comparison, contract, ownership, service, repair, continuation and
-reassignment, with every number coming from the model.
+## What exists today
+
+A Model Context Protocol server exposes the MML lifecycle as a graph of
+operations, backed by a deterministic model and a persistent customer context.
+An MCP-capable runtime can use the interface to explore a household journey
+across discovery, requirement, shortlist, comparison, contract, ownership,
+service, repair, continuation and reassignment, with every number coming from
+the model.
+
+This is a model interface and a reproducible conversation surface. It is not
+an autonomous Agency, a multi-agent system, or a cross-provider orchestration
+layer. In particular, it has no external-provider integrations, delegated
+authority, consent model, action policy, independently controlled custody or
+condition review.
 
 ```text
 packages/core        economics: mobility class, Mobility Rate, three acquisition modes,
@@ -29,7 +40,7 @@ The README's principle holds: the MCP layer contains no economic logic. Every
 tool is a thin call into `@mml/lifecycle`, which composes `@mml/core` over
 `@mml/data` and writes to the context.
 
-## From funnel to graph
+## What the interface proves: a lifecycle graph, not a funnel
 
 The note's central move is to model the automotive funnel as a graph. The
 server does this literally: each tool is a node, the customer context is the
@@ -49,12 +60,12 @@ edge that connects them, and any node can be an entry point.
 | what moves it | `sensitivity_placement` | not a node: every provenanced input shocked one at a time, so the Agency can say what a number rests on |
 | what would have to be true | `break_even_placement` | not a node: the distance, structural life, cost of capital or consumption factor at which the answer changes, or "none" |
 
-The `agency` prompt is the orchestrator's brief. It tells the hosting agent to
+The `agency` prompt is a constrained conversation brief. It tells the hosting agent to
 start from the requirement, to quote only what a tool returned, to name the
 kind of every number that matters, to show what each mode charges for
 rather than claim MML is cheaper, and to record every step.
 
-## Running it
+## Running the deterministic interface
 
 ```bash
 npx pnpm@10.15.0 install          # Node >= 24
@@ -130,7 +141,26 @@ step for the model is the rest of M3, evidence for the other six vehicles
 and for the fleet-side parameters; for the agent, the one the note
 describes: put a real household in front of it.
 
-## Boundaries
+## The future Agentic MML experiment
+
+Agentic MML remains a distinct, related experiment. Its first prototype should
+begin with one bounded cross-provider scenario, such as the €450 household
+journey into ownership, service and commerce. It may coordinate specialised
+tools for OEM, dealer, finance, insurance, commerce, maintenance and resale,
+but must remain additive to the deterministic MML model.
+
+Before such a prototype acts outside its own fixtures, it needs a governance
+contract: authenticated identity; explicit delegated authority; consent and
+data-retention limits; read/recommend/propose/commit action tiers; attributable
+audit; separation between recommendation, valuation, credit custody and
+condition assessment; independent review; and human escalation.
+
+The orchestrator owns neither the economic truth nor unilateral authority. It
+may compose accountable tool outputs into a customer experience, while the
+model remains the source of calculations and each external provider remains
+responsible for its own actions.
+
+## Current boundaries
 
 - Fixtures stand in for dealer inventory, finance, insurance and repair
   pricing. No external API is called. The adapters exist so that each source

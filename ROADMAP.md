@@ -61,15 +61,23 @@ GitHub milestones M1–M8 mirror this file; every open item below is an issue, l
 - [x] Export JSON/CSV and figure-ready datasets (`modes.csv`, `sensitivity.csv`, `break-even.csv`).
 - [ ] Integrate bundles with the publication without running simulations during site builds. #18 (the site records model version and bundle manifest since its release 0.1.1)
 
-## M8 · Agency prototype
+## M8 · Agency interface and future Agentic MML experiment
 
-The order was revised in September 2026: the working note *Agentic MML* argued
-that the lifecycle experience may become integrable before the lifecycle
-industry becomes integrated, so an agentic layer was built on the deterministic
-core first, with fixtures standing in for the ecosystem. See `docs/AGENTIC.md`.
+The current MCP server is an interface over deterministic lifecycle
+operations: it makes the model interrogable and preserves a customer context.
+It is not yet the Agentic MML experiment. That future, related experiment
+tests whether a governed persistent orchestrator can coordinate independently
+owned OEM, dealer, finance, insurance, commerce, maintenance and resale
+systems without claiming their authority or folding them into the core model.
+See `docs/AGENTIC.md` and `docs/PUBLICATION-ALIGNMENT.md`.
 
 - [x] Translate household needs and budget into mobility scenarios.
 - [x] Show best-fit and lower-cost alternatives, including later lives of the same model.
 - [x] Explain recommendation and trade-off rather than only returning a price.
 - [ ] Put a real household in front of the Agency and record the transcript. #19
 - [ ] Replace one fixture at a time with a live source (dealer stock, insurance tariff, repair pricing). #20
+- [ ] Define the Agentic MML governance contract before any external action:
+  identity, delegated authority, consent, action tiers, attributable audit,
+  independent review and human escalation.
+- [ ] Create the separate Agentic MML orchestration scaffold only when the
+  first cross-provider scenario and its governance boundary are selected.

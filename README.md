@@ -19,7 +19,10 @@ outputs                  scratch results (gitignored)
 docs                     methodology and architecture
 ```
 
-See `docs/AGENTIC.md` for the agentic layer and how to run it.
+See [`docs/PUBLICATION-ALIGNMENT.md`](docs/PUBLICATION-ALIGNMENT.md) for the
+published-series contract and [`docs/AGENTIC.md`](docs/AGENTIC.md) for the
+boundary between the existing MCP interface and the future Agentic MML
+experiment.
 
 ## Principles
 
@@ -29,6 +32,23 @@ See `docs/AGENTIC.md` for the agentic layer and how to run it.
 - The MCP server exposes the model; it does not contain economic logic.
 - The publication interprets the model; it does not contain the model.
 - Site builds never execute simulations.
+- An MCP tool interface is not, by itself, an autonomous Agency or an
+  orchestration layer across external providers.
+
+## Editorial alignment
+
+*The Lifecycle Transition* is published separately in
+`marianoviola/website`. Its first five parts are now public: *The €450
+question*, *The lifecycle is the product*, *Designing the asset*, *Three
+forms of capital*, and *When things go wrong*. The series is the reference for concepts and definitions;
+versioned bundles are the reference for numerical claims.
+
+Model 0.2.0 implements and tests the Parts 1–2 pricing and lifecycle
+scenario, and provides partial, explicit representations of the Parts 3–4
+asset and capital concepts. It does not yet establish the industrial,
+contractual or governance conditions that those chapters describe. The
+chapter-by-chapter contract, evidence boundary and next release gates are in
+[`docs/PUBLICATION-ALIGNMENT.md`](docs/PUBLICATION-ALIGNMENT.md).
 
 ## Initial roadmap
 
