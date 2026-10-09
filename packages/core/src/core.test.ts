@@ -156,3 +156,24 @@ test("break-even bisects a monotone function, rounds to a step and says when the
   assert.equal(shocked.a.b.value, 3);
   assert.throws(() => withProvenancedValue({ a: 1 }, "a", 2));
 });
+
+
+test("whole-asset recovery proxies are alternatives, never additive floors", () => {
+  const base = estimateRetention(vehicle, curves, 4, 60000, "good");
+  const evaluate = (mobility: number, components: number, material: number) => assessContinuation({
+    vehicle, retention: { ...base, mobilityValue: assumption(mobility, "test"),
+      componentRetentionValue: assumption(components, "test"), materialRetentionValue: assumption(material, "test") },
+    pendingRepairCost: 0, horizonMonths: 12, currentMonthlyFixed: 300,
+    alternativeMonthlyFixed: 400, reassignmentCost: 300,
+  });
+  // 900 + 300 would wrongly retire a vehicle still worth 1000 in service.
+  const viable = evaluate(1000, 900, 300);
+  assert.equal(viable.asset.valueAsComponentsAndMaterial.value, 900);
+  assert.equal(viable.decision, "continue");
+  // Material recovery can dominate when component demand is low.
+  const materialRoute = evaluate(500, 200, 600);
+  assert.equal(materialRoute.asset.valueAsComponentsAndMaterial.value, 600);
+  assert.equal(materialRoute.decision, "retire-and-harvest");
+  // A tie provides no positive margin for continuation.
+  assert.equal(evaluate(600, 600, 200).decision, "retire-and-harvest");
+});

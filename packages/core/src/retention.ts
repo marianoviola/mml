@@ -7,11 +7,11 @@ export interface RetentionValues {
   condition: VehicleCondition;
   /** Value of the vehicle as mobility: what it is worth kept in service. */
   mobilityValue: ProvenancedValue;
-  /** Chapter 2.3: productive value remaining in recoverable systems. */
+  /** Whole-asset component recovery proxy; alternative to material recovery, not additive. */
   componentRetentionValue: ProvenancedValue;
-  /** Net value after recovery and processing costs. */
+  /** Whole-asset material proxy, net under fixture assumptions; not a guaranteed floor. */
   materialRetentionValue: ProvenancedValue;
-  /** Chapter 2.5: the floor a Material Capital Credit can be linked to. */
+  /** Chapter 2.5: assumed credit target, not a legally protected or guaranteed recovery floor. */
   materialCapitalFloor: ProvenancedValue;
 }
 

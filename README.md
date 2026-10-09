@@ -38,14 +38,12 @@ experiment.
 ## Editorial alignment
 
 *The Lifecycle Transition* is published separately in
-`marianoviola/website`. Its first five parts are now public: *The €450
-question*, *The lifecycle is the product*, *Designing the asset*, *Three
-forms of capital*, and *When things go wrong*. The series is the reference for concepts and definitions;
+`marianoviola/website`. Its thirteen-part web series is complete as of 9 October 2026. The series is the reference for concepts and definitions;
 versioned bundles are the reference for numerical claims.
 
-Model 0.2.0 implements and tests the Parts 1–2 pricing and lifecycle
+Model 0.2.1 implements and tests the Parts 1–2 pricing and lifecycle
 scenario, and provides partial, explicit representations of the Parts 3–4
-asset and capital concepts. It does not yet establish the industrial,
+asset and capital concepts. Model 0.2.1 corrects continuation to compare whole-asset component and material recovery proxies as alternatives, avoiding a double count. It does not yet establish the industrial,
 contractual or governance conditions that those chapters describe. The
 chapter-by-chapter contract, evidence boundary and next release gates are in
 [`docs/PUBLICATION-ALIGNMENT.md`](docs/PUBLICATION-ALIGNMENT.md).
@@ -61,11 +59,11 @@ chapter-by-chapter contract, evidence boundary and next release gates are in
 7. Generate immutable result bundles for the MML publication.
 8. Build an Agency experience prototype only after the model is credible.
 
-Status: **model 0.2.0**. The deterministic core, the fixture layer, the lifecycle
+Status: **model 0.2.1**. The deterministic core, the fixture layer, the lifecycle
 operations, sensitivity, break-even and the MCP server exist and are tested; the
 €450 scenario runs end to end under three assumption sets, with the budget
 tested against the fixed Mobility Rate as chapter 2.3 defines it, and its
-bundles are committed under `bundles/0.2.0/`. The vehicle the scenario rests on is documented
+bundles are committed under `bundles/0.2.1/`. The vehicle the scenario rests on is documented
 from published sources; the other six remain assumptions with a rationale. What the
 run says is in `docs/AGENTIC.md`.
 

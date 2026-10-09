@@ -68,3 +68,15 @@ The project intentionally starts deterministic:
 10. Agency experience prototype
 
 This order is intended to make the model inspectable before it becomes interactive.
+
+## Recovery comparison (0.2.1)
+
+CRV and MRV are alternative whole-asset fixture proxies, not additive floors.
+Continuation compares repaired mobility value with `max(CRV, MRV)`. A mixed
+plan reusing selected components and recycling the remaining shell needs
+non-overlapping inventories, yields, demand, timing and costs not represented
+here. The legacy field `valueAsComponentsAndMaterial` now carries the maximum
+and an explicit derived formula. A positive proxy is not a binding buyer offer;
+negative net recovery is possible in reality. The fixture's material-credit
+floor is a contractual modelling assumption, not a guaranteed economic floor
+or legally protected customer balance.

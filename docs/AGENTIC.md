@@ -6,7 +6,7 @@ itself has changed? This document distinguishes the first enabling interface
 that exists today from that separate future experiment.
 
 The public series *The Lifecycle Transition* is the conceptual reference. Its
-first five published parts define the current alignment boundary; see
+thirteen published parts define the current conceptual boundary; see
 [`PUBLICATION-ALIGNMENT.md`](PUBLICATION-ALIGNMENT.md). The editorial series
 lives in a separate repository and is not duplicated here.
 
@@ -85,7 +85,7 @@ connected, then invoke the `agency` prompt with a customer id and ask the
 €450 question. Customer records persist under `state/` as one JSON file
 each, so a conversation can stop and resume in another session or runtime.
 
-## What the run says, model 0.2.0
+## What the run says, model 0.2.1
 
 The scenario runs Part 1's household, two adults, two children, regular long
 journeys, 20,000 km a year, no home charging, €450 a month, through the
@@ -95,7 +95,7 @@ with energy estimated and shown beside it. The Corolla Touring Sports the
 scenario rests on is documented from Toyota Motor Italia's MY26 price list
 and maintenance tariff, MIMIT fuel prices, IVASS liability premiums and 77
 used-market asking prices; the rest of the fixtures remain assumptions with
-a rationale. The canonical bundles are in `bundles/0.2.0/`. Findings,
+a rationale. The canonical bundles are in `bundles/0.2.1/`. Findings,
 central set:
 
 - **€450 buys the family-touring class in its third life, not new.** The

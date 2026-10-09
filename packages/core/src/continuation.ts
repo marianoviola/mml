@@ -9,7 +9,7 @@ export interface ContinuationAssessment {
   ageYears: number;
   decision: ContinuationDecision;
   pendingRepairCost: number;
-  /** Chapter 4.1, the asset question: value kept in service after the repair vs value as components and material. */
+  /** Chapter 4.1, the asset question: value kept in service after the repair vs alternative whole-asset recovery value. */
   asset: {
     valueAsRepairedVehicle: ProvenancedValue;
     valueAsComponentsAndMaterial: ProvenancedValue;
@@ -51,7 +51,10 @@ export function assessContinuation(args: {
   const softwareHorizonPassed = retention.ageYears >= life.softwareSupportHorizonYears.value;
 
   const repairedValue = retention.mobilityValue.value - pendingRepairCost;
-  const harvestValue = retention.componentRetentionValue.value + retention.materialRetentionValue.value;
+  // Both fixture estimates cover the whole asset. Adding them would also
+  // count the material inside recovered components. A combined dismantling
+  // plan requires disjoint inventories, yields and costs which are not modelled.
+  const harvestValue = Math.max(retention.componentRetentionValue.value, retention.materialRetentionValue.value);
   let remainsAsset = repairedValue > harvestValue;
   if (remainsAsset && remainingYears < horizonMonths / 12) {
     remainsAsset = false;
@@ -62,9 +65,9 @@ export function assessContinuation(args: {
     reasoning.push("Software support has lapsed and the repair exceeds half the remaining mobility value.");
   }
   if (!remainsAsset && reasoning.length === 0) {
-    reasoning.push(`Repaired, the vehicle is worth €${round(repairedValue)}; as components and material it returns €${round(harvestValue)}. The fleet harvests it.`);
+    reasoning.push(`Repaired, the vehicle is worth €${round(repairedValue)}; under the best modelled recovery route it returns €${round(harvestValue)}. The fleet harvests it.`);
   } else if (remainsAsset) {
-    reasoning.push(`Repaired, the vehicle is worth €${round(repairedValue)} against €${round(harvestValue)} as components and material: it stays a mobility asset.`);
+    reasoning.push(`Repaired, the vehicle is worth €${round(repairedValue)} against €${round(harvestValue)} under the best modelled recovery route: it stays a mobility asset.`);
     if (harvestValue > repairedValue * 0.9) reasoning.push("The margin is under 10%: the next significant repair reopens the question.");
   }
 
@@ -90,7 +93,7 @@ export function assessContinuation(args: {
     pendingRepairCost,
     asset: {
       valueAsRepairedVehicle: derived(round(repairedValue), "mobility value − pending repair"),
-      valueAsComponentsAndMaterial: derived(round(harvestValue), "component retention value + material retention value"),
+      valueAsComponentsAndMaterial: derived(round(harvestValue), "max(component retention value, material retention value); alternative whole-asset proxies, not additive"),
       remainsMobilityAsset: remainsAsset,
     },
     placement: {

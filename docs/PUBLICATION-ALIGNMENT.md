@@ -8,8 +8,9 @@ deterministic model, provenance, scenarios and reproducible bundles. Neither
 repository copies the other. A model change does not alter published prose; a
 published conceptual change does not silently alter a bundle.
 
-The first five parts are public as of October 2026. This document is the
-release contract between their published meaning and model 0.2.0.
+All thirteen web chapters are published as of 9 October 2026. This document
+is the contract between the complete web series and model 0.2.1. Completion
+of the web series does not imply release of its separate PDF/EPUB edition.
 
 ## Current contract
 
@@ -20,6 +21,15 @@ release contract between their published meaning and model 0.2.0.
 | 3. *Designing the asset* | Partial | Condition, repair states, continuation and replacement-mobility outcomes can be evaluated for the fixtures. | Configurations, technical documentation, certified retrofit, software support, type approval and engineering liability are not modelled. |
 | 4. *Three forms of capital* | Partial | Mobility, Component and Material Retention Values are distinct; continuation and harvesting decisions retain the highest viable state in the scenario. | Component identity, custody, recovery rights, independent condition evidence, physical destination and Material Bank operations are not modelled. |
 | 5. *When things go wrong* | Partial | Fixture-backed repair events, scenario replacement mobility and continuation decisions can be explored. | Insurance settlement, custody, component-level flows, independent assessment, provider accountability, appeal, cross-border recovery and customer-credit adjustment are not modelled. |
+
+| 6. *The Agency* | Interface only | CLI/MCP expose deterministic model operations and customer context. | A governed Agency, live provider offers, delegated authority, provider selection, settlement and service guarantees are not implemented. |
+| 7. *The Distributed Factory* | Conceptual | Scenario repair costs and retention proxies are available. | Network capacity, component inventories, disjoint recovery plans, supplier contracts, yields and lead times are not simulated. |
+| 8. *The jobs around a car that doesn't get replaced* | Outside model | No employment result is claimed. | Occupations, wages, training, productivity, regional transitions and net jobs require separate evidence. |
+| 9. *Who owns the fleet?* | Partial | Scenario capital cost and sensitivity are explicit assumptions. | Legal ownership, debt/equity structure, liquidity, covenants, insolvency and customer-credit custody are not modelled. |
+| 10. *A different residual value* | Partial; corrected in 0.2.1 | Continuation uses max(CRV, MRV), two alternative whole-asset recovery proxies. MCC contributions remain inside the fixed rate. | No additive value floors, mixed dismantling inventory, binding recovery offers, accounting valuation or enforceable customer entitlement. |
+| 11. *Europe* | Outside model | No regional or environmental benefit is calculated. | Material resilience, trade, industrial output, collection yields and lifecycle assessment require separate models. |
+| 12. *Where MML fails* | Partial | Deterministic assumption sets and sensitivity expose selected economic dependencies. | Probabilities, correlated failure, governance, portability, surveillance controls and solvency are not implemented. |
+| 13. *The €450 answer* | Reference scenario only | At 20,000 km/year, central six-year-old placement is €435 fixed, €607 including estimated energy; new is €600 fixed. | Chapter 6's 15,000 km family is illustrative. No market quotation, universal cost advantage or funded operating system is established. |
 
 The terms above are definitions, not market prices. A used-market price, a
 customer Material Capital Credit and a modelled retention value must never be
@@ -59,9 +69,8 @@ Before a later chapter or a model release makes a shared claim:
 
 ## Next alignment frontier
 
-Parts 5 and 6 should not be treated as already implemented. For Part 5, the
-next model questions are the roles, ledgers, independent checks and provider
-economics required to test responsibility when the lifecycle breaks. For Part
-6, they concern how an Agency assembles a mobility outcome without assuming
-providers' authority. Agentic MML is a later experience-and-governance
-experiment over that foundation.
+The completed series establishes a research agenda, not a completed operating
+platform. Next work must test actual finance, provider economics, custody,
+independent assessments and accountable decisions in a bounded pilot.
+Agentic MML remains a later experiment; the MCP interface is not evidence that
+external-provider orchestration or delegated authority already works.

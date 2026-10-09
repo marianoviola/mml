@@ -65,24 +65,35 @@ No numeric claims; concepts match the model (three stages in
 `lifecycle.stage`, three asset states, repair before replacement, the
 Vitara in the fixtures). No erratum.
 
-## Part 4, in preparation
+## Completion of the web series, model 0.2.1 (9 October 2026)
 
-What the model can supply, with hashes, from `bundles/0.2.0/four-fifty.central.json`:
+Parts 4–13 have now been revised and published in the Website repository.
+The full chapter-by-chapter boundary is in `PUBLICATION-ALIGNMENT.md`.
+Historical errata above refer to the 0.2.0 reconciliation and are retained.
 
-- the hierarchy Mobility / Component / Material Capital, on the Corolla at
-  eight years and 152,000 km: €13,621 / €8,520 / €1,190;
-- the credit floor at 90% of Material Retention Value (one method,
-  labelled; §2.5 left it open) and its linear build over the term;
-- the continuation rule: continue while repaired value exceeds harvest
-  value, and say that the next significant repair reopens the question
-  when the margin is under 10%;
-- the break-even quantities: 23 years of structural life or fleet capital
-  at 1.7% for MML to cost what rental costs on a new placement; 27 years
-  on the third life;
-- the adverse and optimistic sets as the chapter's range.
+- Part 6's household is illustrative: four people, 15,000 km/year, €450
+  fixed-rate budget. It does not receive a calculated quotation.
+- Part 7 distinguishes existing industrial activities from a proposed
+  integrated network; demand arithmetic is labelled hypothetical.
+- Parts 8–9 make employment and financing conditional, without net-job,
+  cheap-capital or insolvency-protection guarantees.
+- Part 10 exposed an additive double count: the old continuation rule added
+  two whole-asset component and material proxies. Model 0.2.1 uses their
+  maximum as an alternative-route benchmark. It does not optimise a mixed
+  dismantling plan. Regression tests cover continuation, retirement and ties.
+  The legacy output key `valueAsComponentsAndMaterial` is retained for API
+  compatibility; its derived formula now states the alternative-route rule.
+- Parts 11–12 separate regulation, policy context, environmental outcomes
+  and governance requirements from model outputs.
+- Part 13 cites the 0.2.1 bundles. The reference household travels 20,000
+  km/year, has no home charging, fifteen years of licence history and a
+  60-month term in Lombardy. Central third-life fixed rate €435 plus energy
+  €172 gives €607; optimistic €372/€146/€517; adverse €558/€198/€756.
+  Components are rounded independently. New central MML is €600 fixed,
+  versus modelled ownership €580 and rental €524. No universal cost
+  advantage is claimed. MCC €17.85/month is inside the fixed rate.
 
-## Model-only assumptions the site's methodology note should state
-
-Fifteen years of licence, Lombardy, no home charging, a 60-month term at
-20,000 km: the household the model runs is more specific than the chapters
-describe. They are inputs, not findings.
+The correction changes continuation recovery values and bundle hashes, not
+pricing inputs. Published 0.2.0 bundles remain immutable. Canonical new
+results are in `bundles/0.2.1/` with source revision and hashes. Web completion
+does not imply PDF/EPUB publication, operational readiness or a finished model.
