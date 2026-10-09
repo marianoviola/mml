@@ -1,0 +1,40 @@
+{
+  "scenario": "four-fifty",
+  "modelVersion": "0.2.1+4ed043b",
+  "generatedAt": "2026-10-09T17:22:30.697Z",
+  "fixtureHashes": {
+    "vehicles.json": "b94681f2d7e3",
+    "offers.json": "1fb17d035429",
+    "finance.json": "bbd003a9e4f7",
+    "insurance.json": "133c4c09efb2",
+    "residual-curves.json": "1b213a00da8e",
+    "energy.json": "e152458087fa",
+    "repairs.json": "ea2c922728f8"
+  },
+  "bundles": [
+    {
+      "set": "adverse",
+      "setHash": "b6a5f9808275",
+      "file": "four-fifty.adverse.json",
+      "outputHash": "f4d828176f802866"
+    },
+    {
+      "set": "central",
+      "setHash": "bc980482a2b6",
+      "file": "four-fifty.central.json",
+      "outputHash": "338988ca535b76bc"
+    },
+    {
+      "set": "optimistic",
+      "setHash": "e63cdb8fa7b0",
+      "file": "four-fifty.optimistic.json",
+      "outputHash": "f4587b16b843dc01"
+    }
+  ],
+  "tables": [
+    "modes.csv",
+    "sensitivity.csv",
+    "break-even.csv"
+  ],
+  "manifestHash": "7d8386117539b044"
+}
